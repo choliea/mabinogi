@@ -1,0 +1,1 @@
+var NGMModuleInfo = '<?xml version="1.0"?><NGMModule><NGMDll host="platform.nexon.com/NGM/Bin/NGMDll.dll" crc="123232708" /><CrashReporter crc="358015648" /></NGMModule>';

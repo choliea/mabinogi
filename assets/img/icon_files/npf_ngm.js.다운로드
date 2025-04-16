@@ -1,0 +1,1275 @@
+function _CustomScheme() {
+  function SafeRegisterEvent( target, eventType, cb ) {
+    if ( target.addEventListener ) {
+      target.addEventListener( eventType, cb );
+      return {
+        remove: function () {
+          target.removeEventListener( eventType, cb );
+        }
+      };
+    }
+    else {
+      target.attachEvent( eventType, cb );
+      return {
+        remove: function () {
+          target.detachEvent( eventType, cb );
+        }
+      };
+    }
+  }
+
+  function CreateHiddenIframe( target, uri ) {
+    var iframe = document.createElement( "iframe" );
+    iframe.src = uri;
+    iframe.id = "hiddenIframe";
+    iframe.style.display = "none";
+    target.appendChild( iframe );
+
+    return iframe;
+  }
+
+  this.IsMacOS = function() {
+    return navigator.userAgent.match(/Mac OS/) != null;
+  }
+
+  this.CheckBrowser = function () {
+    var isOpera = !!window.opera || navigator.userAgent.indexOf( ' OPR/' ) >= 0;
+    return {
+      isOpera   : isOpera,
+      isFirefox : typeof InstallTrigger !== 'undefined',
+      isSafari  : this.IsMacOS() && navigator.userAgent.toLowerCase().indexOf('safari') > -1,
+      isChrome  : !!window.chrome && !isOpera,
+      isIE      : /*@cc_on!@*/false || !!document.documentMode, // At least IE6
+      isEdge    : navigator.userAgent.toLowerCase().indexOf('edge') > -1
+    }
+  };
+
+  this.IsSupportedBrowser = function () {
+    var browser = this.CheckBrowser();
+    if (browser.isFirefox || browser.isChrome || browser.isOpera || browser.isSafari) {
+      return true;
+    } else if (browser.isIE && document.documentMode != null) {
+      var availableMinDocumentMode = 9;
+      return document.documentMode >= availableMinDocumentMode;
+    }
+
+    return false;
+  }
+
+  this.OpenUriWithHiddenFrameWithoutBlur = function ( uri, successCb, failCb ) {
+    var iframe = document.querySelector( "#hiddenIframe" );
+    if ( !iframe ) {
+      iframe = CreateHiddenIframe( document.body, "about:blank" );
+    }
+
+    try {
+      iframe.contentWindow.location.href = uri;
+      successCb();
+    } catch ( e ) {
+      failCb();
+    }
+  };
+
+  this.OpenUriWithoutBlur = function (uri, successCb, failCb) {
+    var browser = this.CheckBrowser();
+    if (navigator.msLaunchUri && browser.isIE) { //for IE in Win 8 and Win 10
+      navigator.msLaunchUri(uri, successCb, failCb);
+    } else {
+      CustomScheme.OpenUriWithHiddenFrameWithoutBlur(uri, successCb, failCb);
+    }
+
+    return true;
+  }
+};
+
+var CustomScheme = new _CustomScheme();
+
+function _NGM()
+{
+  this.strInstallPage = "http://platform.nexon.com/ngm/html/pop_ngm_agreement.html";
+  this.NGM_SETUP_URL = "http://platform.nexon.com/NGM/Bin/Install_NGM.exe";
+  this.PLUG_SETUP_URL = "http://platform.nexon.com/NGM/LocalInstallerDownloader/NexonPlugDownloader.exe";
+
+  if (CustomScheme.IsMacOS()) {
+    this.NGM_SETUP_URL = "http://platform.nexon.com/NGM/Bin/Install_NexonPlug.pkg";
+    this.PLUG_SETUP_URL = "";
+  }
+
+  // Browser Info Setting
+  if ( window.navigator.userAgent.toLowerCase().indexOf('edge') > -1 && navigator.msLaunchUri != undefined )
+  {
+    this.BrowserInfo= "Edge";
+  }
+  else if ( (window.navigator.appName == "Microsoft Internet Explorer") || ( window.navigator.userAgent.toLowerCase().indexOf('trident') > -1 ) )
+  {
+    this.BrowserInfo= "IE";
+  }
+  else if (window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1)
+  {
+    this.BrowserInfo= "FF";
+  }
+  else if (window.navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
+  {
+    this.BrowserInfo= "Chrome";
+  }
+  else if (window.navigator.userAgent.toLowerCase().indexOf('opera') > -1)
+  {
+    this.BrowserInfo= "Opera";
+  }
+  else if (window.navigator.userAgent.toLowerCase().indexOf('safari') > -1)
+  {
+    this.BrowserInfo= "Safari";
+  }
+  else if (window.navigator.userAgent.toLowerCase().indexOf('netscape') > -1)
+  {
+    this.BrowserInfo= "Netscape";
+  }
+  else
+  {
+    this.BrowserInfo= "Unknown";
+  }
+
+  if (document.documentMode && document.documentMode < 11) {
+    if (typeof console !== 'undefined') {
+      console.error('NGM execution layer does not support under ie 11');
+    }
+  } else {
+    ImportModule({
+        src: document.location.protocol + "//fesdk.nexon.com/ngm-execution-layer/bundle.js",
+        name: "NgmRunLayer",
+        complete: function(m) {
+      }
+    });
+  }
+
+  this.ErrorHandler = function NGM_ErrorHandler()
+  {
+    if (window.navigator.userAgent.match(/iPhone|iPod|iPad|Android/) != null)
+    {
+      alert("모바일 환경에서는 PC 게임 실행을 지원하지 않습니다.");
+    }
+    else
+    {
+      NGM.OpenInstallAgreement(NGM.NGM_SETUP_URL);
+    }
+  };
+
+  this.IsChrome = function NGM_IsChrome()
+  {
+    return this.BrowserInfo == "Chrome" ? true : false;
+  }
+
+  this.GenerateArgument = function NGM_GenerateArgument( mode, game, passport, insign_token, arg, age, a2sk, position, serviceCode, architecturePlatform, publisher ) 
+  {
+    if(typeof arg === 'object' && Object.prototype.toString.call(arg) === Object.prototype.toString.call({})) {
+      arg = JSON.stringify(arg);  
+    }
+
+    if (CustomScheme.IsMacOS()) {
+      var gamecode = game.split('@')[0];
+      var kMaplestoryGamecode = '589825';
+      var kMaplestoryTestWorldGamecode = '589826';
+      if ((gamecode == kMaplestoryGamecode) || (gamecode == kMaplestoryTestWorldGamecode)) {
+        var windowsArgs = this.GenerateArgumentWindows(mode, gamecode, passport, insign_token, arg, age, a2sk, position, serviceCode, architecturePlatform);
+        return "game=" + game + "&windowsArgs=" + encodeURIComponent("-onMac " + windowsArgs);
+      }
+      return this.GenerateArgumentMac(game, insign_token, arg, passport);
+    }
+    return this.GenerateArgumentWindows(mode, game, passport, insign_token, arg, age, a2sk, position, serviceCode, architecturePlatform, publisher);
+  };
+
+  this.GenerateArgumentMac = function NGM_GenerateArgumentMac( game, insign_token, arg, passport ) 
+  {
+    var argument = "game=" + game;
+
+    if (arg != null && arg != "" && arg != "undefined") {
+      argument += "&passarg=" + arg;
+    }
+
+    if (insign_token != null && insign_token != "" && insign_token != "undefined") {
+      argument += "&insignToken=" + insign_token;
+    }
+
+    if (passport != null && passport != "" && passport != "undefined") {
+      argument += "&passport=" + passport;
+    }
+
+    return argument;
+  };
+
+  this.GenerateArgumentWindows = function NGM_GenerateArgumentWindows( mode, game, passport, insign_token, arg, age, a2sk, position, serviceCode, architecturePlatform, publisher ) 
+  {
+    var argument = "-mode:" + mode + " -game:'" + game + "'" + " -passarg:'" + arg + "'";
+    
+    if ( passport != null && passport != "" && passport != "undefined" )
+    {
+      argument += " -token:'" + passport + "'";
+      if (!passport.startsWith("NP")) {
+        argument += " -npp:'" + this.GetCookie("NPP") + "'";
+      }
+    }
+
+    if ( insign_token != null && insign_token != "" && insign_token != "undefined" )
+    {
+      argument += " -insign_token:'" + insign_token + "'";
+    }
+
+    if ( age != null && age != "" && age != "undefined" )
+    {
+      argument += " -age:" + age;
+    }
+
+    if ( a2sk != null && a2sk != "" && a2sk != "undefined" )
+    {
+      argument += " -a2sk:'" + a2sk + "'";
+    }
+
+    if ( position == null || position == "" || position == "undefined" )
+    {
+      position = "GameWeb|" + location.href;
+    }
+
+    if ( position.length > 100 )
+    {
+      position = position.substr(0,100);
+    }
+
+    argument += " -position:'" + position + "'";
+
+    if ( serviceCode != null && serviceCode != "" && serviceCode != "undefined" )
+    {
+        argument += " -service:" + serviceCode;
+    }
+
+    if ( architecturePlatform != null && ( architecturePlatform == "x86" || architecturePlatform == "x64" || architecturePlatform == "auto" ) )
+    {
+        argument += " -architectureplatform:'" + architecturePlatform + "'";
+    }
+    else
+    {
+        argument += " -architectureplatform:'none'";
+    }
+
+    if (publisher != null && publisher != "" && publisher != "undefined") {
+      argument += " -publisher:'" + publisher + "'";
+    }
+
+    argument += " -timestamp:" + new Date().getTime();
+
+    return argument;
+  };
+
+
+  this.GenerateURI = function NGM_GenerateURI( argument ) 
+  {
+    if (CustomScheme.IsMacOS()) {
+      return "nexonplug://?" + encodeURI(argument);
+    }
+    return "ngm://launch/ " + encodeURIComponent( argument );
+  };
+
+  this.ExecuteNGM = function NGM_ExecuteNGM( argument, game )
+  {
+    /**
+     * Mac 환경에서는 기존 Windows와 달리 실행레이어 내부에서 scheme 호출 여부가 실행 레이어 내부의 버튼 동작에 의해 결정됨. (lazyExecute)
+     */
+    var ngmOptions = {
+      lazyExecute: false //CustomScheme.IsMacOS()
+    }
+    var token = this.GetCookie("_ifwt");
+    NgmLayerHelper.initialize(String(game), argument, null, ngmOptions, token);
+
+    if ( CustomScheme.IsSupportedBrowser() )
+    {
+      NGMQuery.initialize(game);
+      var uri = this.GenerateURI(argument);
+      if (!ngmOptions.lazyExecute) {
+        CustomScheme.OpenUriWithoutBlur( uri, this.SuccessCallback, NgmLayerHelper.openLayer );
+      } else {
+        NgmLayerHelper.tryOpenLayer()
+      }
+      return true;
+    }
+  }
+
+  this.GxForceInstall = function NGM_GxForceInstall( game, arg, passport, age, position, serviceCode )
+  {
+    var a2sk  = this.GetCookie( "A2SK" );
+    var insign_token = this.GetInsignToken();
+    var argument = this.GenerateArgument( "install", game, passport, insign_token, arg, age, a2sk, position, serviceCode, null );
+    
+    this.ExecuteNGM(argument, game);
+  };
+  
+  this.GxLaunchGame = function NGM_GxLaunchGame( game, arg, passport, age, position, serviceCode, architecturePlatform, publisher )
+  {
+    if ( publisher != null && publisher != "" && publisher != "undefined" ) {
+      NgmLayerHelper.options['publisher'] = publisher;
+    }
+    var a2sk  = this.GetCookie( "A2SK" );
+    var insign_token = this.GetInsignToken();
+    var argument = this.GenerateArgument( "launch", game, passport, insign_token, arg, age, a2sk, position, serviceCode, architecturePlatform, publisher );
+    
+    this.ExecuteNGM(argument, game);
+  };
+
+  this.LaunchGame = function NGM_LaunchGame( game, arg, position, architecturePlatform )
+  {
+    var npp   = this.GetCookie( "NPP" );
+    this.GxLaunchGame( game, arg, npp, null, position, null, architecturePlatform );
+  };
+
+  this.LaunchGame2 = function NGM_LaunchGame2( game, arg, service, architecturePlatform )
+  {
+    var npp   = this.GetCookie( "NPP" );
+    this.GxLaunchGame( game, arg, npp, null, null, service, architecturePlatform );
+  };
+
+  this.LaunchGameWithInsign = function NGM_LaunchGameWithInsign( mode, game, webtoken, gid, arg ) 
+  {
+    if(mode === "launch" || mode === "restore") {
+      var argument = this.GenerateArgument( mode, game, null, this.ToInsignToken(webtoken, gid), arg, null, this.GetCookie( "A2SK" ), null, null, null );
+      this.ExecuteNGM(argument, game);
+    }
+  };
+
+  this.ForceInstall = function NGM_ForceInstall( game, arg, position )
+  {
+    var npp   = this.GetCookie( "NPP" );
+    this.GxForceInstall( game, arg, npp, null, position, null );
+  };
+
+  this.ForceInstall2 = function NGM_ForceInstall2( game, arg, service )
+  {
+    var npp   = this.GetCookie( "NPP" );
+    this.GxForceInstall( game, arg, npp, null, null, service );
+  };
+
+  this.ManualRestore = function NGM_ManualRestore( game, arg, position, serviceCode, architecturePlatform )
+  {
+    var npp = this.GetCookie( "NPP" );
+    var a2sk = this.GetCookie( "A2SK" );
+    var insign_token = this.GetInsignToken();
+    var argument = this.GenerateArgument( "restore", game, npp, insign_token, arg, null, a2sk, position, serviceCode, architecturePlatform );
+
+    this.ExecuteNGM(argument, game);
+  };
+
+  this.DLCInstall = function NGM_DLCInstall( game, dlcname )
+  {
+    var npp = this.GetCookie( "NPP" );
+    var a2sk = this.GetCookie( "A2SK" );
+    var insign_token = this.GetInsignToken();
+    var argument = this.GenerateArgument( "dlcinstall", game, npp, insign_token, null, null, a2sk );
+    argument += " -dlcname:'" + dlcname + "'";
+
+    this.ExecuteNGM(argument, game);
+  };
+
+  this.MxForceInstall = function NGM_MxForceInstall( game, arg, position )
+  {
+    var msenc = this.GetCookie( "MSGENC" );
+    this.GxForceInstall( game, arg, msenc, null, position, null );
+  };
+
+  this.MxLaunchGame = function NGM_MxLaunchGame( game, arg1, arg2, position, architecturePlatform )
+  {
+    var msenc   = this.GetCookie( "MSGENC" );
+    var launchtype  = String( arg1 ).toLowerCase();
+    var lastworld = String( arg2 ).toLowerCase();
+
+    if ( lastworld != null && lastworld != "" && lastworld != "undefined" )
+    {
+      msenc = msenc + ":" + arg2;
+    }
+    if ( launchtype == "gameluanching" )
+    {
+      msenc = "";
+    }
+
+    this.GxLaunchGame( game, arg1, msenc, null, position, null, architecturePlatform );
+  };
+
+  this.PlugLaunchGame = function NGM_PlugLaunchGame( game, publisher )
+  {
+    if ( publisher != null && publisher != "" && publisher != "undefined" ) {
+      NgmLayerHelper.options['publisher'] = publisher;
+    }
+    
+    var argument = this.GenerateArgument( "pluglaunch", game, null, null, '', null, null, null, null, null, publisher );
+    this.ExecuteNGM( argument, game );
+  }
+
+  this.ChannelForceInstall = function NGM_ChannelForceInstall( game, arg, chenc, service, position )
+  {
+    this.GxForceInstall( game, arg, chenc, null, position, service );
+  };
+
+  this.ChannelLaunchGame = function NGM_ChannelLaunchGame( game, arg, chenc, service, position, architecturePlatform )
+  {
+    this.GxLaunchGame( game, arg, chenc, null, position, service, architecturePlatform );
+  };
+
+  this.ExecuteNGMFromLayer = function NGM_ExecuteNGMFromLayer(options){
+    
+    if ( CustomScheme.IsSupportedBrowser() )
+    {
+      NGMQuery.initialize(NgmLayerHelper.gamecode);
+      if(NgmLayerHelper.argument != null){
+        var uri = this.GenerateURI( NgmLayerHelper.argument );
+        /**
+         * Mac에서 실행여부가 결정 된 뒤, Mac의 실행레이어는 로딩 화면이 존재하지 않기 때문에 실행레이어가 재 활성화 되어서는 안됨. (lazyExecute = hideExecutionLayer)
+         */
+        CustomScheme.OpenUriWithoutBlur(uri, function() { this.SuccessCallback({
+          hideExecutionLayer: NgmLayerHelper.lazyExecute
+        }) }, function() { });
+        return true;
+      }else{
+        return false;
+      }
+
+    }
+  };
+
+  function GenerateArgumentFromObject(obj) {
+    var args = "";
+    if (obj instanceof Object && obj.constructor === Object) {
+      var keys = Object.keys(obj);
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var value = obj[key];
+        args += "-" + key + ":'" + ((value instanceof Object && value.constructor === Object) ? JSON.stringify(value) : value) + "'";
+        if (i < keys.length - 1) {
+          args += " "
+        }
+      }
+    }
+    return args;
+  }
+
+  this.LaunchGameOnlyPassArgs = function NGM_LaunchGameOnlyPassArgs( arg, game, gamename, param_obj )
+  {
+    NgmLayerHelper.options['publisher'] = 'Others';
+    if (param_obj && param_obj.publisher) {
+      NgmLayerHelper.options['publisher'] = param_obj.publisher;
+      delete param_obj.publisher;
+    }
+    
+    var mode = "launch";
+    if (param_obj && param_obj.mode) {
+      mode = param_obj.mode;
+      delete param_obj.mode;
+    }
+    var argument = this.GenerateArgument( mode, game, null, null, arg, null, null, null, null, null );
+    var additional_argument = GenerateArgumentFromObject(param_obj);
+    if (additional_argument) {
+      argument += " " + additional_argument;
+    }
+
+    NgmLayerHelper.initialize(game, argument, gamename);
+
+    if ( CustomScheme.IsSupportedBrowser() )
+    {
+      NGMQuery.initialize(game);
+      var uri = this.GenerateURI( argument );
+      CustomScheme.OpenUriWithoutBlur( uri, this.SuccessCallback, NgmLayerHelper.openLayer );
+      return true;
+    }
+  }
+
+  this.DownloadNGM = function NGM_DownloadNGM()
+  {
+    this.DownloadResource(this.NGM_SETUP_URL);    
+  };
+
+  this.ChangeUrlProtocol = function NGM_ChangeUrlProtocol(url)
+  {
+    var changedUrl = url;
+    var PROTOCOL_SEPARATOR = "//";
+    if (url.indexOf(PROTOCOL_SEPARATOR) !== -1) {
+      var protocolSeparatedUrl = url.split(PROTOCOL_SEPARATOR);
+      if (location.protocol === "https:") {
+        protocolSeparatedUrl[0] = location.protocol;
+      }
+      changedUrl = protocolSeparatedUrl[0] + PROTOCOL_SEPARATOR + protocolSeparatedUrl[1];
+    }
+    return changedUrl;
+  };
+
+  this.DownloadResource = function NGM_DownloadResource( downloadPath )
+  {
+    location.href = this.ChangeUrlProtocol(downloadPath);
+  };
+
+  this.OpenInstallAgreement = function NGM_OpenInstallAgreement(download_url)
+  {
+    var popup_url = NGM.strInstallPage + "?download_url=" + this.ChangeUrlProtocol(download_url);
+    window.open(popup_url, null, "height=500,width=450,status=yes,toolbar=no,menubar=no,location=no");
+  };
+
+  this.GetCookie = function NGM_GetCookie( nameVal )
+  {
+    var numCookie = document.cookie.length;
+    var oven = document.cookie.split( '; ' );
+
+    for ( var i = 0; i < oven.length; i++ )
+    {
+      if ( oven[i].indexOf( '=' ) != -1 )
+      {
+        cookieName = oven[i].substring( 0, oven[i].indexOf( '=' ) );
+      }
+      else
+      {
+        cookieName = oven[i];
+      }
+
+      if ( cookieName == nameVal )
+      {
+        if ( oven[i].indexOf( '=' ) != -1 )
+        {
+          cookieVal = oven[i].substr( oven[i].indexOf( '=' ) + 1 );
+        } else {
+          cookieVal = '';
+        }
+        return cookieVal;
+      }
+    }
+    return '';
+  };
+
+  this.ToInsignToken = function NGM_ToInsignToken(webtoken, gid)
+  {
+    return JSON.stringify({
+      webtoken: webtoken,
+      gid: gid
+    });
+  }
+
+  this.GetInsignToken = function NGM_GetInsignToken()
+  {
+    var insign_token_gid = "";
+    if ( window.inface != null && window.inface.auth != null && window.inface.auth.gid != null )
+    {
+      insign_token_gid = String( window.inface.auth.gid );
+    }
+
+    return this.ToInsignToken(this.GetCookie( '_ifwt' ), insign_token_gid);
+  }
+
+  this.StringTrim = function (str) {
+    return str.replace(/(^\s*)|(\s*$)/gi,"");
+  };
+
+  this.SuccessCallback = function (options) {
+    NgmLayerHelper.updateTimepoint();
+    NGMQuery.queryNGMStatus(options); 
+  };
+
+  this.RegisterMIDSuccessCallback = function() {
+  };
+
+  this.RegisterMIDErrorHandler = function() {
+  };
+
+  this.RegisterMID = function(registerMIDToken) {
+    var a2sk  = this.GetCookie( "A2SK" );
+    var npp = this.GetCookie( "NPP" );
+    var argument = this.GenerateArgument( "registermid", 0, npp, null, '', null, a2sk, null, null, null );
+    argument += " -registermidtoken:'" + registerMIDToken + "'";
+    
+    if (CustomScheme.IsSupportedBrowser() && !CustomScheme.IsMacOS()) {
+      var uri = this.GenerateURI( argument );
+      CustomScheme.OpenUriWithoutBlur(uri, this.RegisterMIDSuccessCallback, this.RegisterMIDErrorHandler);
+      return true;
+    }
+
+    return false;
+  };
+
+  this.GetPcInfo = function(gamecode, successHandler, errorHandler) {
+    var a2sk  = this.GetCookie("A2SK");
+    var npp = this.GetCookie("NPP");
+    var argument = this.GenerateArgument("getpcinfo", gamecode, npp, null, '', null, a2sk, null, null, null);
+    
+    if (CustomScheme.IsSupportedBrowser() && !CustomScheme.IsMacOS()) {
+      var uri = this.GenerateURI(argument);
+
+      CustomScheme.OpenUriWithoutBlur(uri, successHandler, errorHandler);
+      return true;
+    }
+
+    return false;
+  }
+
+  this.GetMachineId = function(gamecode, resultCallback) {
+    if(MachineIdQuery.intervalStarted) {
+      return true;
+    }
+
+    var a2sk  = this.GetCookie("A2SK");
+    var npp = this.GetCookie("NPP");
+    var argument = this.GenerateArgument("getpcinfo", gamecode, npp, null, '', null, a2sk, null, null, null);
+    
+    if (CustomScheme.IsSupportedBrowser() && !CustomScheme.IsMacOS()) {
+      var uri = this.GenerateURI(argument);
+      CustomScheme.OpenUriWithoutBlur(uri, function() { }, function() { });
+
+      var kTimeInterval = 250;
+      var kIntervalMaxCount = 200;
+
+      MachineIdQuery.intervalStarted = true;
+      MachineIdQuery.intervalId = setInterval(function() {
+        try {
+          if(MachineIdQuery.intervalCount >= kIntervalMaxCount) {
+            resultCallback(-1, "Timeout");
+            MachineIdQuery.clear();
+          }
+
+          var reqObj = new XMLHttpRequest();
+          if (reqObj) {
+            reqObj.onreadystatechange = function() {
+              if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                if(MachineIdQuery.intervalStarted) {
+                  MachineIdQuery.clear();
+                  var result = JSON.parse(this.responseText);
+                  resultCallback(this.status, result.MachineID || result.MachineId);
+                  return;
+                }
+              }
+            };
+
+            var port = 19999;
+            var requestJson = '';
+            var method = '';
+            if (MachineIdQuery.intervalCount % 2 == 0) {
+              port = ((gamecode != 0)? (gamecode & 0x0000FFFF) : 19999);
+              method = 'GET';
+            } else {
+              port = 29999;
+              requestJson = JSON.stringify({'gamecode' : gamecode});
+              method = 'POST';
+            }
+
+            ++MachineIdQuery.intervalCount;
+            reqObj.open(method, "http://127.0.0.1:" + port + "/machineid");
+            reqObj.send(requestJson);
+          }
+        } catch(e) { }
+      }, kTimeInterval);
+
+      return true;
+    }
+
+    MachineIdQuery.clear();
+    return false;
+  }
+
+  this.ClearNGMStatusTimer = function(){
+    NGMQuery.clearTimer();
+    NGMQuery.clearAllRequests();
+  }
+
+  function ImportModule(options) {
+    var head = document.getElementsByTagName( "head" )[ 0 ],
+    script = document.createElement( "script" ),
+    loaded = false;
+    
+    var tgs = document.getElementsByTagName( "script" );
+    for( var i = 0, l = tgs.length; i < l; i++ ) {
+      var s = tgs[ i ].getAttribute( "src" );
+      if( s != null && s.indexOf( options.src ) > -1 ) {
+        var n = tgs[ i ].getAttribute( "data-name" );
+        if( n !== null && typeof( window[ n ] ) !== "undefined" ) {
+          window[ options.name ] = window[ n ];
+        }
+        break;
+      }
+    }
+    
+    if( typeof( window[ options.name ] ) === "object" ) {
+      options.complete( window[ options.name ] );
+      return;
+    }
+    
+    script.setAttribute( "type", options.type || "text/javascript" );
+    script.setAttribute( "charset", options.charset || "utf-8" );
+    script.setAttribute( "src", options.src || "" );
+    if( typeof( options.data ) !== "undefined" ) {
+      for( var d in options.data ) {
+        script.setAttribute( "data-" + d.toString(), options.data[ d ] || "" );
+      }
+    }
+    if( typeof( options.name ) !== "undefined" ) {
+      script.setAttribute( "data-name", options.name );
+    }
+    script.onload = script.onreadystatechange = function() {
+      var rs = this.readyState;
+      if( rs && rs != "complete" && rs != "loaded" ) return;
+      if( loaded ) return;
+      loaded = true;
+      options.complete( window[ options.name ] );
+    };
+    head.appendChild( script );
+  };
+};
+
+var NGM = new _NGM();
+
+var NGMQuery = {
+  response : null,
+  queryGame : 0,
+  intervalID : 0,
+  requests : [],
+
+  clearTimer : function() {
+    if (this.intervalID != 0) {
+      clearInterval(this.intervalID);
+      this.intervalID = 0;
+    }
+  },
+
+  clearAllRequests : function() {
+    for(i = 0; i < this.requests.length; i++) {
+      if (this.requests[i]) {
+        this.requests[i].abort();
+        this.requests[i] = null;
+      }
+    }
+    this.requests = [];
+  },
+
+  initialize : function(queryGame) {
+    NGMQuery.response = null;
+    NGMQuery.queryGame = queryGame;
+  },
+
+  succeeded : function() {
+    if (NGMQuery.response == null) {
+      NGMQuery.response = true;
+      NGMQuery.clearTimer();
+      NGMQuery.clearAllRequests();
+      NgmLayerHelper.closeLayer();
+    }
+  },
+
+  failed : function() {
+    if (NGMQuery.response == null) {
+      NGMQuery.response = false;
+      NGMQuery.clearTimer();
+      NGMQuery.clearAllRequests();
+      NgmLayerHelper.tryOpenLayer();
+    }
+  },
+
+  queryNGMStatus : function(options) {
+    NGMQuery.clearTimer();
+    NGMQuery.clearAllRequests();
+    if (!(typeof options !== 'undefined' && options.hideExecutionLayer === false)) {
+      NgmLayerHelper.tryOpenLayer();
+    }
+    var closeLayerMaxCount = 60;
+    var closeLayerCount = 0;
+    NGMQuery.intervalID = setInterval(function(){
+      NGMQuery.requestToNGM();
+      closeLayerCount++
+      if(closeLayerCount > closeLayerMaxCount){
+        clearInterval(NGMQuery.intervalID);
+      }
+    }, 1000);
+
+  },
+
+  requestToNGM : function() {
+    try {
+      var reqObj = new XMLHttpRequest();
+      if (reqObj) {
+        reqObj.onreadystatechange = function() {
+          if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+            NGMQuery.succeeded();
+          }
+        };
+
+        var port = 0;
+
+        if (String(NGMQuery.queryGame).indexOf('@') == -1) {
+          port = (NGMQuery.queryGame & 0x0000FFFF);
+        } else {
+          port = (NGMQuery.queryGame.split('@')[0] & 0x0000FFFF);
+        }
+        
+        if (port < 1024) {
+            port +=  19999;
+        }
+
+        reqObj.open("GET", "http://127.0.0.1:" + port + "/status");
+        reqObj.send();
+        NGMQuery.requests[NGMQuery.requests.length] = reqObj;
+      }
+    } catch(e) { }
+  }
+};
+
+var MachineIdQuery = {
+  intervalStarted : false,
+  intervalCount : 0,
+  intervalId : 0,
+  clear : function() {
+    MachineIdQuery.intervalStarted = false;
+    MachineIdQuery.intervalCount = 0;
+    clearInterval(MachineIdQuery.intervalId);
+  }
+};
+
+var NgmLayerHelper = {
+  gamecode : 0,
+  gamename : "",
+  token : "",
+  lazyExecute: false,
+  openStarted : false,
+  argument : null,
+  options : {
+    publisher: "NexonKorea",
+    supportMac : false,
+    supportWindows : false
+  },
+
+  initialize : function(newGamecode, argument, newGamename, options, token) {
+    if (!NgmLayerHelper.openStarted) {
+      if (newGamecode != NgmLayerHelper.gamecode) {
+        NgmLayerHelper.gamename = "";
+        NgmLayerHelper.gamecode = newGamecode;
+      }
+      if(token != null && token != "" && token != "undefined" ){
+        NgmLayerHelper.token = token;
+      }
+      if(newGamename != null && newGamename != "" && newGamename != "undefined" ){
+        NgmLayerHelper.gamename = newGamename;
+      }
+      if(argument != null && argument != "" && argument != "undefined"){
+        NgmLayerHelper.argument = argument;
+      }
+      if (options && typeof options.lazyExecute !== 'undefined') {
+        NgmLayerHelper.lazyExecute = !!options.lazyExecute
+      }
+    }
+  },
+
+  tryOpenLayer : function() {
+    if (!NgmLayerHelper.openStarted) {
+      NgmLayerHelper.openLayer();
+    }
+  },
+
+  openLayer : function() {
+    if (!NgmLayerHelper.openStarted) {
+      NgmLayerHelper.openStarted = true;
+      NgmLayerHelper.getGameInfo(function(loadedGamename) {
+        if (loadedGamename) {
+          NgmLayer.openNgmLayer(loadedGamename, NgmLayerHelper.options);
+        } else {
+          NgmLayer.openNgmLayer(null, NgmLayerHelper.options);
+        }
+  
+        NgmLayerHelper.openStarted = false;
+      });
+    }
+  },
+  closeLayer : function(){
+    NgmLayer.closeNgmLayer();
+  },
+
+  getPlayDuration : function() {
+    if (window.localStorage) {
+      var savedTimepoint = window.localStorage.getItem(NgmLayerHelper.getTimepointKey());
+      if (savedTimepoint) {
+        return (new Date()).getTime() - Number(savedTimepoint);
+      }
+      return Number.MAX_VALUE;
+    }
+    return -1;
+  },
+
+  getTimepointKey : function() {
+    return "play" + NgmLayerHelper.gamecode;
+  },
+
+  updateTimepoint : function() {
+    if (window.localStorage) {
+      window.localStorage.setItem(NgmLayerHelper.getTimepointKey(), (new Date()).getTime());
+    }
+  },
+
+  hasGamename : function() {
+    return (NgmLayerHelper.gamename && NgmLayerHelper.gamename.length > 0);
+  },
+
+  getGameInfo : function(resultCallback) {
+    if (NgmLayerHelper.hasGamename()) {
+      resultCallback(NgmLayerHelper.gamename);
+    } else if (NgmLayerHelper.loadGameInfoFromLocalStorage()) {
+      resultCallback(NgmLayerHelper.gamename);
+    } else {
+      NgmLayerHelper.loadGameInfoFromNgmApi(resultCallback);
+    }
+  },
+
+  getGameInfoKey : function() {
+    return "gameInfoKey" + NgmLayerHelper.gamecode;
+  },
+
+  loadGameInfoFromLocalStorage : function() {
+    if (window.localStorage) {
+      gameInfoByLocalStorage = window.localStorage.getItem(NgmLayerHelper.getGameInfoKey());
+      if(gameInfoByLocalStorage && gameInfoByLocalStorage.length > 0) {
+        var gameInfo = JSON.parse(gameInfoByLocalStorage);
+        NgmLayerHelper.gamename = gameInfo.gamename;
+        NgmLayerHelper.options['supportMac'] = gameInfo.supportMac;
+        NgmLayerHelper.options['supportWindows'] = gameInfo.supportWindows;
+        return true;
+      }
+    }
+    return false;
+  },
+
+  saveGameInfoToLocalStorage : function() {
+    if (window.localStorage && NgmLayerHelper.hasGamename()) {
+      var gameInfo = {};
+      gameInfo['gamename'] = NgmLayerHelper.gamename;
+      gameInfo['supportMac'] = NgmLayerHelper.options['supportMac'];
+      gameInfo['supportWindows'] = NgmLayerHelper.options['supportWindows'];
+      window.localStorage.setItem(NgmLayerHelper.getGameInfoKey(), JSON.stringify(gameInfo));
+    }
+  },
+
+  loadGameInfoFromNgmApi : function(resultCallback) {
+    try {
+      var httpRequest = new XMLHttpRequest();
+      if (httpRequest) {
+        httpRequest.onreadystatechange = function() {
+          if (httpRequest.readyState != XMLHttpRequest.DONE) {
+            return;
+          }
+
+          var newGamename = null;
+          if (httpRequest.status == 200) {
+            var json = null;
+            try {
+              json = JSON.parse(httpRequest.responseText);
+            } catch(ex) { }
+
+            if ((typeof(json) === typeof({}))) {
+              if(json.game_name && json.game_name.length > 0) {
+                newGamename = json.game_name;
+                NgmLayerHelper.gamename = json.game_name;
+              }
+
+              var MAC_PLUG = 1;
+              if (json.market && json.market == MAC_PLUG) {
+                NgmLayerHelper.options['supportMac'] = true;
+                NgmLayerHelper.options['supportWindows'] = false;
+              } else {
+                NgmLayerHelper.options['supportMac'] = false;
+                NgmLayerHelper.options['supportWindows'] = true;
+              }
+
+              NgmLayerHelper.saveGameInfoToLocalStorage();
+            }
+          }
+          resultCallback(newGamename);
+        };
+
+        httpRequest.open("GET", "https://ngmapi.nexon.com/game-layer-info/" + NgmLayerHelper.gamecode);
+
+        if(NgmLayerHelper.token) {
+          httpRequest.setRequestHeader("Authorization", NgmLayerHelper.token);
+        }
+
+        httpRequest.send();
+      }
+    } catch(ex) { }
+  }
+};
+
+function NxPcChecker() {
+    var constants = {
+        kStatusCheckMaxCount: 20,
+        kStatusCheckInterval: 250,
+        kCheckMaxCount: 60,
+        kCheckInterval: 500,
+        kAvailableMinDocumentMode: 11,
+        kNGMDownloadConfirm : "PC사양을 조회하려면 NGM을 설치해야 합니다.\r\nNGM을 다운로드하시겠습니까?",
+        errors: {
+            kRequestError: -1,
+            kOK: 0,
+            kNotSupportedOS: 1,
+            //kIELowVersion: 2,  Not Used (#PPT-3569, gcyong)
+            kNotSupportedBrowser: 3,
+            kNGMExecutionFailed: 4,
+            //kNGMNotInstalled: 5,  Not Used (#PPT-3569, gcyong)
+            kPCSpecRetrieveFailed: 6,
+            kAlreadyExecuted: 7
+        },
+        errorStrings: {
+            1: "Windows 7 이상의 PC에서만 사양 체크가 가능합니다.",
+            3: "접속하신 브라우저는 지원하지 않는 브라우저입니다.\r\n(지원 브라우저 : IE11, Chrome, Edge)",
+            4: "PC사양을 가져오는 도중 알 수 없는 문제가 발생했습니다. 다시 시도해주세요.",
+            6: "PC사양을 가져올 수 없습니다. 다시 시도해주세요.",
+            7: "이미 조회 중입니다."
+        },
+        steps: {
+            kNGMStatusCheck: 0,
+            kPCSpecCheck: 1
+        }
+    };
+
+    var helper = {
+        isSupportedOS: function () {
+            var filter = "win32|win64";
+            if (navigator.platform) {
+                return filter.indexOf(navigator.platform.toLowerCase()) > -1;
+            }
+
+            return false;
+        },
+        isSupportedBrowser: function () {
+            var browser = CustomScheme.CheckBrowser();
+            if (browser.isChrome || browser.isEdge) {
+                return true;
+            } else if (browser.isIE && document.documentMode != null) {
+                return (document.documentMode >= constants.kAvailableMinDocumentMode);
+            }
+
+            return false;
+        }
+    };
+
+    var config = {
+        checkStep: constants.steps.kNGMStatusCheck,
+        checkCount: 0,
+        isCheckStarted: false,
+        requestPort: [29999],
+        timerId: null,
+        successCallback: null,
+        errorCallback: null,
+        clearConfig: function () {
+            config.checkStep = constants.steps.kNGMStatusCheck;
+            config.checkCount = 0;
+            config.isCheckStarted = false;
+            config.requestPort = [29999];
+            config.resetInterval();
+            config.successCallback = null;
+            config.errorCallback = null;
+        },
+        setRequestPort: function (port) {
+            config.requestPort[1] = port;
+        },
+        setCallbacks: function (successCallback, errorCallback) {
+            config.successCallback = successCallback;
+            config.errorCallback = errorCallback;
+        },
+        setCheckStep: function (checkStep) {
+            config.checkStep = checkStep;
+            config.checkCount = 0;
+            config.isCheckStarted = true;
+            config.resetInterval();
+            if (config.checkStep == constants.steps.kNGMStatusCheck) {
+                config.timerId = setInterval(config.requestToNGM, constants.kStatusCheckInterval);
+            } else {
+                config.timerId = setInterval(config.requestToNGM, constants.kCheckInterval);
+            }
+        },
+        resetInterval: function () {
+            if (config.timerId) {
+                clearInterval(config.timerId);
+                config.timerId = null;
+            }
+        },
+        getMaxCheckCount: function () {
+            switch (config.checkStep) {
+                case constants.steps.kNGMStatusCheck:
+                    return constants.kStatusCheckMaxCount;
+                case constants.steps.kPCSpecCheck:
+                    return constants.kCheckMaxCount;
+            }
+
+            return 0;
+        },
+        getRequestUrl: function (index) {
+            if (config.checkStep == constants.steps.kNGMStatusCheck) {
+                return "http://127.0.0.1:" + config.requestPort[index] + "/status";
+            } else if (config.checkStep == constants.steps.kPCSpecCheck) {
+                return "http://127.0.0.1:" + config.requestPort[index] + "/pcinfo";
+            }
+
+            return "";
+        },
+        requestToNGM: function () {
+            if (config.checkCount >= config.getMaxCheckCount()) {
+                config.resetInterval();
+                config.resultCallback(constants.errors.kRequestError, "요청 시간 초과");
+                return;
+            }
+
+            ++config.checkCount;
+            try {
+                var request = new XMLHttpRequest();
+                if (request) {
+                    request._checkStep = config.checkStep;
+                    request.onreadystatechange = function () {
+                        if (this.readyState == XMLHttpRequest.DONE) {
+                            if (config.isCheckStarted && (config.checkStep == this._checkStep)) {
+                                if (this.status == 200) {
+                                    config.resetInterval();
+                                    config.resultCallback(constants.errors.kOK, this.responseText);
+                                    return;
+                                } else if (this.status == 500) {
+                                    config.resetInterval();
+                                    config.resultCallback(constants.errors.kRequestError, this.responseText);
+                                    return;
+                                }
+                            }
+                        }
+                    };
+                    request.open("GET", config.getRequestUrl(config.checkCount % config.requestPort.length));
+                    request.send();
+                }
+            } catch (e) {
+
+            }
+        },
+        resultCallback: function (code, data) {
+            switch (code) {
+                case constants.errors.kOK:
+                    if (config.checkStep == constants.steps.kNGMStatusCheck) {
+                        config.setCheckStep(constants.steps.kPCSpecCheck);
+                    } else {
+                        if (config.successCallback) {
+                            config.successCallback(data);
+                        }
+                        config.clearConfig();
+                    }
+                    break;
+                case constants.errors.kRequestError:
+                    if (config.checkStep == constants.steps.kNGMStatusCheck) {
+                        if (confirm(constants.kNGMDownloadConfirm)) {
+                            NGM.DownloadNGM();
+                        }
+                        config.clearConfig();
+                    } else if (config.checkStep == constants.steps.kPCSpecCheck) {
+                        if (config.errorCallback) {
+                            var error = JSON.parse(data);
+                            if (!error) {
+                                error = {};
+                                error.message = "알 수 없는 오류가 발생했습니다.";
+                            }
+
+                            var errorString = constants.errorStrings[constants.errors.kPCSpecRetrieveFailed] + "\r\n(" + error.message + ")";
+                            config.errorCallback(constants.errors.kPCSpecRetrieveFailed, errorString);
+                        }
+                        config.clearConfig();
+                    }
+                    break;
+                default:
+                    config.clearConfig();
+                    break;
+            }
+        }
+    };
+
+    this.getPcInfo = function (resultCallback, errorCallback, gamecode) {
+        if (config.isCheckStarted) {
+            errorCallback(
+				constants.errors.kAlreadyExecuted,
+				constants.errorStrings[constants.errors.kAlreadyExecuted]);
+            return;
+        }
+
+        if (!helper.isSupportedOS()) {
+            errorCallback(
+				constants.errors.kNotSupportedOS,
+				constants.errorStrings[constants.errors.kNotSupportedOS]);
+            return;
+        }
+
+        if (!helper.isSupportedBrowser()) {
+            errorCallback(
+				constants.errors.kNotSupportedBrowser,
+				constants.errorStrings[constants.errors.kNotSupportedBrowser]);
+            return;
+        }
+
+        if (gamecode && (gamecode !== 0)) {
+            config.setRequestPort(gamecode & 0x0000FFFF);
+        } else {
+            var Gnb;
+            if (Gnb && Gnb.options && Gnb.options.gameCode && (Gnb.options.gameCode !== 0)) {
+                config.setRequestPort(Gnb.options.gameCode & 0x0000FFFF);
+                gamecode = Gnb.options.gameCode;
+            } else {
+                config.setRequestPort(19999);
+                gamecode = 0;
+            }
+        }
+
+        function ngmSuccessHandler() {
+            config.setCheckStep(constants.steps.kNGMStatusCheck);
+        };
+
+        function ngmErrorHandler() {
+            var browser = CustomScheme.CheckBrowser();
+            if(browser.isIE) {
+                if (confirm(constants.kNGMDownloadConfirm)) {
+                    NGM.DownloadNGM();
+                }
+            } else {
+                errorCallback(constants.errors.kNGMExecutionFailed, constants.errorStrings[constants.errors.kNGMExecutionFailed]);
+            }
+            config.clearConfig();
+        };
+
+        config.setCallbacks(resultCallback, errorCallback);
+        NGM.GetPcInfo(gamecode, ngmSuccessHandler, ngmErrorHandler);
+    }
+}
+
+var nxPcChecker = new NxPcChecker();
+function _ArenaLauncher() {
+    this.Launch = function ArenaLauncher_Launch(productId, partnerKey) {
+        if (!productId) {
+            return false;
+        }
+
+        var url = "nxl://launch/" + productId;
+        if (partnerKey) {
+            url = url.concat("?partnerkey=" + partnerKey);
+        }
+
+        window.open(url);
+        return true;
+    };
+
+    this.GetDownloadURL = function ArenaLauncher_GetDownloadURL(region, productId, partnerKey) {
+        var GetSetupFileName = function (region) {
+            var setupFileName = "NexonLauncherSetup";
+            var regions = ["TH", "TW", "SEA"];
+            if (regions.indexOf(region) > -1) {
+                setupFileName = setupFileName.concat("_" + region);
+            }
+            setupFileName = setupFileName.concat(".exe");
+            return setupFileName;
+        };
+
+        var url = "https://download.nxfs.nexon.com/download-launcher";
+        url = url.concat("?file=" + GetSetupFileName(region? region.toUpperCase() : ""));
+        if (productId) {
+            url = url.concat("&product-id=" + productId);
+        }
+        if (partnerKey) {
+            url = url.concat("&partnerkey=" + partnerKey)
+        }
+        return url;
+    }
+};
+
+var ArenaLauncher = new _ArenaLauncher();
+

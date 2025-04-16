@@ -1,0 +1,355 @@
+﻿let mmPageName = "", initFlag = false, isLogin = false, communityUserId = "", isWebview = false, _alias = "", mmIsMobile = false, mmNPSN = "";
+((w, d) => {    
+    const mmCommon = {
+        isJsonData: (data) => {
+            try { return (typeof JSON.parse(data) === 'object'); } catch (e) { return false; }
+        }
+        , goMain: () => {
+            location.href = "/Main";
+        }
+        , getCookie: (name) => {
+            var value = document.cookie.match(`(^|;) ?${name}=([^;]*)(;|$)`);
+            return value ? unescape(value[2]) : null
+        }
+        , setCookie: (name, value, exp) => {
+            var date = new Date();
+            date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
+            document.cookie = name + '=' + escape(value) + ';expires=' + date.toUTCString() + ';path=/';
+        }
+        , postData: async (u, f, t = "json") => {
+            let returnmag = "예기치 못한 오류가 발생하였습니다.<br>새로고침 후 다시 시도해 주세요.";
+            try {
+                const response = await fetch(u, { method: "POST", cache: "no-cache", headers: { "X-Requested-With": "XMLHttpRequest" }, body: f });
+                if (!response.ok) {
+                    return t == "json" ? { ResultCode: -9999, ResultMessage: returnmag } : `{"ResultCode" : -9999, "ResultMessage" : "${returnmag}"}`;
+                }
+                return t == "json" ? response.json() : response.text();
+            } catch (e) {
+                return { ResultCode: -9999, ResultMessage: returnmag };
+            }
+        }
+        , pagereload: (u) => {
+            if (history.pushState) {
+                history.pushState(null, null, `?${u.toString()}`);
+            }
+        }
+        , share: (obj, callback) => {
+            const _s = obj.dataset.service ?? "url";
+            const _t = obj.dataset.title ?? d.querySelector("head meta[property='og:title']").getAttribute("content") ?? "";
+            const _u = obj.dataset.url ?? d.querySelector("head meta[property='og:url']").getAttribute("content") ?? location.href;
+            const _m = obj.dataset.msg ?? "주소가 복사되었습니다.";
+            if (_s == "facebook") {
+                window.open(`http://www.facebook.com/sharer.php?t=${encodeURIComponent(_t)}&u=${encodeURIComponent(_u)}`, _s, `width=800,height=400,resizable=yes,scrollbars=yes`);
+                return;
+            }
+            else if (_s == "x") {
+                window.open(`https://x.com/intent/post?text=${encodeURIComponent(_t)}&url=${encodeURIComponent(_u)}`, _s, `width=800,height=425,resizable=yes,scrollbars=yes`);
+                return;
+            }
+            else {
+                if (!navigator.clipboard) {
+                    clipboard_execCommand(_u, _m, callback);
+                    return;
+                }
+                navigator.clipboard.writeText(_u, _m)
+                    .then(res => {
+                        if (callback != undefined && callback !== null) {
+                            callback(_m);
+                        } else {
+                            modal.alert({ message: _m, onConfirm: { name: '', callback: function () { } } })
+                        }
+                    }).catch(err => {
+                        clipboard_execCommand(_u, _m, callback);
+                    });
+            }
+        }
+        , clipboard: (text, msg, callback) => {
+            const _m = msg ?? "복사되었습니다.";
+
+            if (!navigator.clipboard) {
+                clipboard_execCommand(text, _m, callback);
+                return;
+            }
+            navigator.clipboard.writeText(text, _m)
+                .then(res => {
+                    if (callback != undefined && callback !== null) {
+                        callback(_m);
+                    } else {
+                        modal.alert({ message: _m, onConfirm: { name: '', callback: function () { } } })
+                    }
+                }).catch(err => {
+                    clipboard_execCommand(text, _m, callback);
+                });
+        }
+        , generateRandomString: (num) => {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+            let result = '';
+            const charactersLength = characters.length;
+            for (let i = 0; i < num; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+
+            return result;
+        }
+        , deepEqual: (a, b) => {
+            if (a === b) { return true; }
+
+            if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) { return false; }
+
+            var keysA = Object.keys(a);
+            var keysB = Object.keys(b);
+
+            if (keysA.length !== keysB.length) { return false; }
+
+            for (var i = 0; i < keysA.length; i++) {
+                var key = keysA[i];
+                if (keysB.indexOf(key) === -1 || !mmCommon.deepEqual(a[key], b[key])) { return false; }
+            }
+
+            return true;
+
+        }
+        , a2sSetClickLog: () => {
+            try {
+                if ($h && $h.a2s) {
+                    $h.a2s.setClickLog(); //a
+                    $(document).on(mmIsMobile ? "touchstart" : "click", '[data-a2s="click"]:not(a)', function () { mmCommon.a2sSendClickLog(this); });
+                }
+            } catch (e) { }
+        }
+        , a2sSendClickLog: (obj, object, option) => {
+            try { ($h && $h.a2s) ? $h.a2s.sendClickLog(object != undefined && object != null && object.length > 0 ? object : $(obj).attr("data-object"), option != undefined && option != null && option.length > 0 ? option : $(obj).attr("data-option")) : ""; } catch (e) { }
+        }
+        , gtagSetClickLog: () => {
+            try {
+                $(document).on(mmIsMobile ? "touchstart" : "click", '[data-gtagaction]', function () { mmCommon.gtagSendClickLog(this); });
+            } catch { }
+        },
+        gtagSendClickLog: (obj, action = "", ecategory = "", label = "", value = 0) => {
+            try {
+                action = action.length == 0 ? $(obj).attr("data-gtagaction") : action;
+                if (action == undefined || action == null || action.length == 0) { return; }
+                ecategory = ecategory == undefined || ecategory.length == 0 ? $(obj).attr("data-gtagecategory") ?? "" : ecategory;
+                label = label.length == 0 ? $(obj).attr("data-gtaglabel") ?? "" : label;
+                value = value == 0 ? $(obj).attr("data-gtagvalue") ?? "" : value;
+                gtag('event', action, {
+                    'event_category': ecategory,
+                    'event_label': label,
+                    'value': value
+                });
+            } catch { }
+        },
+        allSendClickLog: (obj) => {
+            try { mmCommon.a2sSendClickLog(obj); } catch { }
+            try { mmCommon.gtagSendClickLog(obj); } catch { }
+            if (obj !== null && obj !== undefined) {
+                var _o = obj.dataset.kakaopixel ?? "false";
+                if (_o == "true") {
+                    try { kakaoPixel('2874456946743950329').pageView(); kakaoPixel('2874456946743950329').signUp(); } catch { }
+                }
+                var _googleaw = obj.dataset.googleaw ?? "";
+                if (_googleaw.length > 0) {
+                    try { gtag('event', 'conversion', { 'send_to': _googleaw }); } catch { }
+                }
+            }
+        },
+        statisticsData: (_defaultType, _actionType, opt = {}) => {
+            let _s = new URLSearchParams(location.search);
+            let _search = Object.fromEntries([..._s.entries()].map(([key, value]) => [key.toLowerCase(), value]));
+
+            let _searchKeyword = (opt.searchKeyword ?? (_search["keywords"] ?? "")) ?? "";        
+            let _boardid = opt.boardId ?? ((mmPageName ?? "").indexOf("board_") >= 0 ? (_boardId ?? "") : _search["boardid"] ?? "");            
+
+            if (_actionType == "search-keyword" && _searchKeyword.length == 0) { return; }
+
+            gtag('event', 'gaData', {
+                'defaultType': _defaultType,
+                'gameCode': _alias,
+                'device': isWebview ? "sdk" : mmIsMobile ? "mobile" : "pc",
+                'pageName': mmPageName ?? "",
+                'boardId': _boardid,
+                'threadId': opt.threadId ?? ((mmPageName ?? "").indexOf("board_") >= 0 ? (_threadId ?? "") : ""),
+                'commentId': opt.commentId ?? "",
+                'reportReason': opt.reportReason ?? "",
+                'searchKeyword': _searchKeyword,
+                'commUserId': communityUserId,
+                'npsnCode': isLogin ? mmNPSN : 0,
+                'lang': "ko",
+                'actionType': _actionType,
+                'isLogin': isLogin ? "Y" : "N"                
+            });
+        },
+        login: () => {
+            try { sessionStorage.setItem("gtagaction", JSON.stringify({ a: "click-login" })); } catch { } 
+            inface.auth.gotoSignIn();
+        },
+        logout: (r = "") => {
+            try { sessionStorage.setItem("gtagaction", JSON.stringify({ a: "click-logout" })); } catch { } 
+            inface.auth.gotoSignOut({ redirect_uri: r });
+        },
+        gamestart: () => {
+            PS.game.startGame({ gameCode: "106700@252b" });
+            try { $h.a2s.sendClickLog('GAMESTART', null); } catch { }
+            try { mmCommon.gtagSendClickLog(null, "게임시작", `GAMESTART`); } catch { }
+            try { gtag('event', 'conversion', { 'send_to': 'AW-11515801515/rWERCOnCq4YaEKvflPMq' }); } catch { }    
+            try { kakaoPixel('2874456946743950329').pageView(); kakaoPixel('2874456946743950329').signUp(); } catch { }    
+        }
+    };
+
+    const mmBanner = {
+        floatingclose: () => {
+            mmCommon.setCookie("mmtoday_floating", true, 1);
+            d.querySelector("[data-mm-bannerfloating]").remove();
+        }
+    };
+
+    function clipboard_execCommand(_u, _m, callback) {
+        if (window.clipboardData) {
+            window.clipboardData.setData("Text", _u);
+            if (callback != undefined && callback !== null) {
+                callback(_m);
+            } else {
+                modal.alert({ message: _m, onConfirm: { name: '', callback: function () { } } })
+            }
+        } else {
+            function handler(event) {
+                event.clipboardData.setData('text/plain', _u);
+                event.preventDefault();
+                document.removeEventListener('copy', handler, true);
+            }
+            try {
+                document.addEventListener('copy', handler, true);
+                document.execCommand('copy');
+                modal.alert({ message: _m, onConfirm: { name: '', callback: function () { } } })                          
+            } catch (e) {
+                temp = prompt("Ctrl+C를 눌러 클립보드로 복사하세요", _u);                
+            }
+        }
+    }
+
+    const mmImage = {
+        compressedImageBlob: null,
+        max_size: 2048,
+        min_filesize: 1 * 1024 * 1024,
+        img_quality: 0.7,
+        selectfile: null,
+        targetobj: null,
+        changefiles: null,
+
+        load_image: async function (e) {
+            this.targetobj = e.target == undefined ? e : e.target;
+            this.targetfiles = this.targetobj.files;
+            this.changefiles = new DataTransfer();
+            const filesArr = Array.prototype.slice.call(this.targetfiles);
+
+            let promise = new Promise((resolve, reject) => {
+                filesArr.forEach((file) => {
+                    const reader = new FileReader();                
+                    reader.onload = (e) => {
+                        if (this.targetobj.files[0].size >= this.min_filesize) {
+                            const image = new Image();
+                            image.src = e.target.result;
+
+                            image.onload = (e) => {
+                                this.resize_image(image);
+                                if (this.compressedImageBlob.size > 0) {
+                                    this.changefiles.items.add(new File([this.compressedImageBlob], this.selectfile.name, { type: this.compressedImageBlob.type, lastModified: this.selectfile.lastModified }));
+                                    this.targetobj.files = this.changefiles.files;
+                                }
+                                resolve(this.targetobj);                                
+                            }
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                    this.selectfile = file;
+                });         
+            });
+            let result = await promise;
+        }
+
+        , resize_image: function (image) {
+            let canvas = d.createElement("canvas"), width = image.width, height = image.height;
+            if (width > height) { // 가로가 길 경우
+                if (width > this.max_size) {
+                    height *= this.max_size / width;
+                    width = this.max_size;
+                }
+            } else { // 세로가 길 경우                                    
+                if (height > this.max_size) {
+                    width *= this.max_size / height;
+                    height = this.max_size;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+            let dataUrl = canvas.toDataURL(this.selectfile.type);
+            if (this.dataURLToBlob(dataUrl).size > (4 * 1024 * 1024))
+                dataUrl = canvas.toDataURL(this.selectfile.type, this.img_quality); //4Mb 넘으면 퀄리티/용량 다운
+            this.compressedImageBlob = this.dataURLToBlob(dataUrl);
+        }
+        , dataURLToBlob: function (dataURL) {
+            const BASE64_MARKER = ";base64,";
+            // base64로 인코딩 되어있지 않을 경우            
+            if (dataURL.indexOf(BASE64_MARKER) === -1) {
+                const parts = dataURL.split(",");
+                const contentType = parts[0].split(":")[1];
+                const raw = parts[1];
+                return new Blob([raw], { type: contentType });
+            }
+            // base64로 인코딩 된 이진데이터일 경우 
+            const parts = dataURL.split(BASE64_MARKER), contentType = parts[0].split(":")[1], raw = w.atob(parts[1]);
+            // atob()는 Base64를 디코딩하는 메서드            
+            const rawLength = raw.length;
+            // 부호 없는 1byte 정수 배열을 생성            
+            const uInt8Array = new Uint8Array(rawLength);
+            // 길이만 지정된 배열            
+            let i = 0;
+            while (i < rawLength) {
+                uInt8Array[i] = raw.charCodeAt(i);
+                i++;
+            }
+            return new Blob([uInt8Array], { type: contentType });
+        }
+    };
+    w.addEventListener("DOMContentLoaded", () => {
+        w.mmCommon = mmCommon;
+        w.mmBanner = mmBanner;
+        w.mmImage = mmImage;
+
+        var _selectbox = d.querySelectorAll("[data-mm-selectbox]");
+        if (_selectbox) {
+            _selectbox.forEach((e) => {
+                var _targettext = e.querySelector("[data-mm-selected]").innerText;
+                var _match = Array.from(e.querySelectorAll("li")).filter(e => e.innerText.trim() == _targettext.trim());
+                if (_match && _match.length > 0) {
+                    _match[0].classList.add("on");
+                    _match[0].dataset.selected = "true";
+                }
+            });
+        }
+    });
+
+    w.addEventListener("load", () => {
+        try {
+            let gtagaction = sessionStorage.getItem("gtagaction")
+
+            if (gtagaction) {
+                let gtagaction_param = JSON.parse(gtagaction);
+                let gtagaction_opt = {};
+                if (gtagaction_param.o) {
+                    gtagaction_opt = gtagaction_param.o;
+                }
+                mmCommon.statisticsData(gtagaction_param.a.indexOf("click") >= 0 ? "click" : "action", gtagaction_param.a, gtagaction_opt);
+                sessionStorage.removeItem("gtagaction");
+            }
+        } catch { }
+
+        
+    });
+    //w.addEventListener("beforeunload", () => {
+    //    try { localStorage.removeItem("eventpretoken"); } catch { }
+    //});
+
+})(window, document);

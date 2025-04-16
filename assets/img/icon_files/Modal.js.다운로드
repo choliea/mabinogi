@@ -1,0 +1,175 @@
+
+class Modal{
+  constructor(){
+    this.parent = document.querySelector('body');
+    this.init();
+    this.onConfirmStack = [];
+    this.onCancelStack = [];
+  }
+
+  init(){
+    const _this = this;
+
+    window.addEventListener('load', function(){
+      _this.parent = document.querySelector('body');
+      _this.parent.addEventListener('click', function(e){
+        if(e.target.closest('.alert_modal')){
+          if(util.hasClass(e.target, 'alert_modal') || util.hasClass(e.target, 'close_button') || util.hasClass(e.target, 'cancel_button') || util.hasClass(e.target, 'confirm_button')) _this.remove(e.target);
+        }else if(e.target.closest('.modal')){
+          if(util.hasClass(e.target, 'modal') || util.hasClass(e.target, 'modal_inner') ||util.hasClass(e.target, 'close_button') || util.hasClass(e.target, 'cancel_button') || util.hasClass(e.target, 'confirm_button')) _this.close(e.target);
+        }
+      })
+      // document.querySelectorAll('.modal').forEach((modal)=>{
+      //   modal.addEventListener('click', function(e){
+      //     if(e.target.closest('.alert_modal')){
+      //       if(util.hasClass(e.target, 'alert_modal') || util.hasClass(e.target, 'close_button') || util.hasClass(e.target, 'cancel_button') || util.hasClass(e.target, 'confirm_button')) _this.remove(e.target);
+      //     }else if(e.target.closest('.modal')){
+      //       if(util.hasClass(e.target, 'modal') || util.hasClass(e.target, 'modal_inner') ||util.hasClass(e.target, 'close_button') || util.hasClass(e.target, 'cancel_button') || util.hasClass(e.target, 'confirm_button')) _this.close(e.target);
+      //     }
+      //   })
+      // })
+    })
+  }
+
+  open(target) {
+    if(document.querySelector(target)){
+      util.pageScrollLock();
+      document.querySelector(target).style.display = 'flex';
+    }
+  }
+
+  close(target) {
+    if(typeof target === 'string'){
+      target = document.querySelector(target);
+    }
+
+    let MODAL = target.closest('.modal');
+    if(util.hasClass(MODAL, 'video_modal')){
+      if(document.querySelector('.video_modal .video iframe')){
+        document.querySelector('.video_modal .video iframe').setAttribute('src', '')
+        if( document.querySelector('.video_modal .title')) document.querySelector('.video_modal .title').innerText = "";
+      }else{
+        document.querySelector('.video_modal .video').innerText = ''
+      }
+     
+    }
+
+    if(util.hasClass(MODAL, 'normal_video_modal')){
+      if(document.querySelector('.normal_video_modal .video iframe')){
+        document.querySelector('.normal_video_modal .video iframe').setAttribute('src', '')
+        if( document.querySelector('.normal_video_modal .title')) document.querySelector('.normal_video_modal .title').innerText = "";
+      }else{
+        document.querySelector('.normal_video_modal .video').innerText = ''
+      }
+    }
+
+    if(util.hasClass(MODAL, 'badge_edit_modal')){
+      document.querySelector('.badge_edit_modal .badge_edit_wrap .top span').style.display = "block";
+      document.querySelector('.badge_edit_modal .badge_edit_wrap .top .edit_text').style.display = "none";
+      document.querySelector('.badge_edit_modal .badge_edit_wrap .badge_list').classList.remove('edit_able');
+      if(document.querySelector('.badge_edit_modal .badge_edit_button')) document.querySelector('.badge_edit_modal .badge_edit_button').style.display = 'flex';
+    }
+    
+    MODAL.style.display = 'none';
+
+    util.pageScrollUnLock();
+  }
+
+  create(HTML) {
+    util.pageScrollLock();
+    this.parent.insertAdjacentHTML('afterbegin', HTML);
+  }
+
+  remove(target) {
+    if(typeof target === 'string'){
+      target = document.querySelector(target)
+    }
+    let MODAL = target.closest('.modal');
+    MODAL.remove();
+    util.pageScrollUnLock();
+  }
+
+  // video(data){
+  //   let src = `https://www.youtube.com/embed/${data.embed}?rel=0&playsinline=1&showinfo=0&autoplay=1`;
+  //   document.querySelector('.video_modal iframe').setAttribute('src', src);
+  //   document.querySelector('.video_modal .title').innerText = data.title;
+  //   this.open('.video_modal');
+  // }
+
+  alert(obj){
+    const _this = this;
+    if(typeof obj.onConfirm?.callback === 'function') this.onConfirmStack.push(obj.onConfirm.callback);
+    if(typeof obj.onCancel?.callback === 'function') this.onCancelStack.push(obj.onCancel.callback);
+
+    let HTML = `
+    <div class="modal alert_modal" style="display: flex;">
+      <div class="modal_inner">
+        <div class="modal_header">
+          <div class="logo"></div>
+          <button class="close_button" onclick="modal.remove(this)"></button>
+        </div>
+        
+        <div class="modal_body">
+          ${obj.title ? `<div class="title"> ${obj.title}</div>` : ''} 
+          ${obj.message ? `<div class="message"> ${obj.message}</div>` : ''} 
+        </div>
+
+        <div class="button_area">
+          ${typeof obj.onCancel === 'object' ? `<button class="cancel_button" onclick="modal.remove(this); modal.callbackStackPop('cancel');">${obj.onCancel.name || '취소' }</button>` : '' } 
+          ${typeof obj.onConfirm === 'object' ? `<button class="confirm_button" onclick="modal.remove(this); modal.callbackStackPop('confirm');">${obj.onConfirm.name || '확인' }</button>` : '' } 
+        </div>
+
+      </div>
+    </div>
+    `
+    this.parent.insertAdjacentHTML('beforeEnd', HTML);
+    util.pageScrollLock();
+
+  }
+
+  callbackStackPop(type){
+    switch(type){
+      case 'confirm':
+        const onConfirm = this.onConfirmStack.pop();
+        if(typeof onConfirm === 'function') onConfirm();
+        break;
+      case 'cancel':
+        const onCancel = this.onCancelStack.pop();
+        if(typeof onCancel === 'function') onCancel();
+        break;
+      default:
+        break;
+    }
+  }
+
+  image(src){
+    util.pageScrollLock();
+
+    const _this = this;
+    let HTML = `
+    <div class="modal image_modal" style="display: flex;">
+      <div class="modal_inner">
+        <div class="modal_header">
+          <div class="logo"></div>
+          <button class="close_button"></button>
+        </div>
+        
+        <div class="modal_body">
+          <div class="detail_image">
+            <img src=${src} alt="" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+    `
+
+    this.parent.insertAdjacentHTML('beforeEnd', HTML);
+
+    document.querySelector('.image_modal .close_button')?.addEventListener('click', function(e){
+      _this.remove(e.target)
+    })
+  }
+}
+
+const modal = new Modal();

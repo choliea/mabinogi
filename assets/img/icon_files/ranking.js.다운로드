@@ -1,0 +1,18 @@
+window.addEventListener('load', function(){
+  // isWebView()
+})
+
+// function isWebView() {
+//   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+//   const userAgentCheck = /WebView|iPhone.*Safari/.test(userAgent) && !/Safari/.test(userAgent)
+//   console.log('userAgentCheck :', userAgent)
+//   const isPWA = window.navigator.standalone;
+//   const isWKWebView = !!(window.webkit && window.webkit.messageHandlers);
+//   console.log('isWKWebView :', isWKWebView)
+
+//   if(userAgentCheck || isPWA || isWKWebView){
+//     document.querySelector('.gnb_wrap')?.remove();
+//     document.querySelector('.category_nav_wrap')?.remove();
+//     document.querySelector('footer')?.remove();
+//   }
+// }

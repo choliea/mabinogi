@@ -1,0 +1,1301 @@
+﻿let _boardActionPath = location.pathname.split('/').slice(0, 3).join('/');
+let _threadId = "", _boardId = ""; _userbancheck = "";
+const allowImageExt = ["jpg", "jpeg", "gif", "png", "bmp"];
+const langRegExp = /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9| \{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"|ㆍᆢ＃＆＊＠§※☆★○●◎◇◆□■△▲▽▼→←↑↓↔〓◁◀▷▶♤♠♡♥♧♣⊙◈▣◐◑▒▤▥▨▧▦▩♨☏☎☜☞¶†‡↕↗↙↖↘♭♩♪♬㉿㈜№㏇™㏂㏘℡®ªº㉠㉡㉢㉣㉤㉥㉦㉧㉨㉩㉪㉫㉬㉭㉮㉯㉰㉱㉲㉳㉴㉵㉶㉷㉸㉹㉺㉻㈀㈁㈂㈃㈄㈅㈆㈇㈈㈉㈊㈋㈌㈍㈎㈏㈐㈑㈒㈓㈔㈕㈖㈗㈘㈙㈚㈛ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽⑾⑿⒀⒁⒂\s]/gi;
+let editor, comment_editor, comment_editor_recomment, commented_editor_edit;
+let templateText_arr = [];
+templateText_arr.push({ "boardid": "0", "template": "명예훼손, 허위정보, 비정상 플레이 유포 등 법률, 약관, 운영정책을 위반하는 게시글 등록 시 이용이 제한될 수 있습니다. <br> 게시글 작성 시 소중한 개인정보를 포함하지 않도록 주의 부탁드립니다." });
+var mmCommunity = mmCommunity || ((w, d) => {   
+
+    const Data = {
+        userbancheck: false,
+        boardStickerYN : "N"
+    };
+
+    const Common = {
+        boardidchange: (obj, headlineId) => {
+            const sh = d.querySelector("[data-mm-searchhedline]");
+            const hl = sh.querySelectorAll(`ul li[data-boardid='${obj.dataset.boardid}']`);
+            d.querySelector("[data-mm-searchboard] input[name='boardid']").value = obj.dataset.boardid;
+            let bl = d.querySelectorAll(`[data-mm-searchboard] .select_option li[data-boardid='${obj.dataset.boardid}']`);
+            const blOnClass = bl !== null && bl !== undefined ? Array.from(bl).some(li => li.classList.contains("on")) : false;
+            if (obj.dataset.boardid !== null && obj.dataset.boardid !== undefined && bl && bl.length > 0) {
+                if (!blOnClass) {
+                    var checkboard = d.querySelector(`[data-mm-searchboard] .select_option li[data-boardid='${obj.dataset.boardid}']`);
+                    checkboard.classList.add("on");
+                    checkboard.dataset.selected = true;
+                }
+                if (d.querySelector("[data-mm-boardwirte]")) {
+                    var templete = templateText_arr.find(item => item.boardid === obj.dataset.boardid);
+                    if (!templete) {
+                        templete = templateText_arr.find(item => item.boardid === "0");
+                    }
+                    $('.note-placeholder').html(templete.template);
+                }
+            }
+
+            sh.querySelector("[data-mm-searchhedline] input[name='headlineId']").value = "";
+            sh.querySelector("[data-mm-selected] [data-msg]").textContent = sh.querySelector("[data-mm-selected] [data-msg]").dataset.msg;
+            sh.querySelectorAll("ul li:not(:first-child)").forEach((e) => { e.style.display = "none"; e.dataset.selected = "false"; e.classList.remove("on"); });
+            if (hl.length > 0) {
+                hl.forEach((e) => { e.style.display = "block"; });
+                sh.classList.remove("disable");
+                if (headlineId !== null && headlineId > 0 && d.querySelector(`[data-mm-searchhedline] ul li[data-headline='${headlineId}']`)) {
+                    sh.querySelector("[data-mm-selected] [data-msg]").textContent = d.querySelector(`[data-mm-searchhedline] ul li[data-headline='${headlineId}']`).textContent;
+                    sh.querySelector("input[name='headlineId']").value = headlineId;
+                    var sh_selected = sh.querySelector(`[data-mm-searchhedline] ul li[data-headline='${headlineId}']`);
+                    sh_selected.dataset.selected = "true";
+                    sh_selected.classList.add("on");
+                }
+            } else {
+                sh.classList.add("disable");
+            }
+            const obj_tags = d.querySelector("[data-mm-tags]");
+            obj_tags?.querySelectorAll("div[data-isdefault='true']")?.forEach((e) => { e.querySelector("button").click(); });
+
+            if (_threadId == 0 || (_threadId > 0 && _boardId != obj.dataset.boardid)) {
+                let defaulttags = new Array();
+                defaulttags = (obj.dataset.taglist ?? "") !== "" ? obj.dataset.taglist.split(',') : new Array();
+
+                if (defaulttags.length > 0) {
+                    const kbEvent = new KeyboardEvent('keyup', { key: 'Enter', keyCode: 13, });
+                    for (var j = 0; j < defaulttags.length; j++) {
+                        if (Array.from(obj_tags.querySelectorAll(".item span")).find(el => el.textContent === `#${defaulttags[j]}`) === undefined) {
+                            d.querySelector('.add_tag input').value = defaulttags[j];
+                            d.querySelector('.add_tag input').dispatchEvent(kbEvent);
+                            obj_tags.querySelector('div:last-child').dataset.isdefault = true;
+                        }
+                    }
+                }
+            }
+            mmCommunity.Common.headlineidchange();            
+        },
+        headlineidchange: () => {
+            const sh = d.querySelector("[data-mm-searchhedline]");            
+            const headlineId = sh.querySelector("li[data-selected='true']");
+            if (sh) {
+                sh.querySelector("[data-headline='0']").style.display = "none";                
+            }
+        },
+        getPlainTextLength: (content) => {
+            var rows = $.parseHTML(content);
+            var textLength = rows.reduce(function (acc, row) {
+                return acc + $(row).text().length;
+            }, 0);
+            return textLength + Math.max(rows.filter(function (row) {
+                var tagName = $(row).get(0).tagName;
+                return tagName === "DIV" || tagName === "P" || tagName === "BR";
+            }).length - 1, 0);
+        }        
+    };
+   
+    const Thread = {              
+        link: (threadid, obj) => {
+            if (_boardActionPath.toLocaleLowerCase().indexOf("/board/") >= 0 || obj == undefined) {
+                let _s = new URLSearchParams(location.search.toLowerCase()); 
+                if (_s.get("boardid") != null) {
+                    _s.delete("boardid");
+                }                
+                let _ob = d.querySelector(`.community_list li[data-boardid='${_boardId}']`);
+                if (_ob) {
+                    _s = _s.toString();
+                    location.href = `${_ob.dataset.url}/${threadid}${(_s.length > 0 ? "?" : "")}${_s}`;
+                } else {
+                    mmCommunity.Thread.listlink();
+                }
+                return;
+            }
+            let pagetype = obj.dataset.pagetype;
+            if (pagetype !== null && (pagetype == "profile" || pagetype == "search" || pagetype == "main")) {
+                if (obj.dataset.link.length == 0) {
+                    location.href = `${obj.dataset.boardactionpath}/${threadid}`;
+                } else {
+                    window.open(obj.dataset.link);
+                }
+            }
+            else {
+                if (pagetype == null) {
+                    obj = obj.closest("[data-pagetype]");
+                }
+                if (obj.dataset.link.length == 0) {
+                    let _u = new URLSearchParams(location.search).toString();
+                    _u = _u.length > 0 ? `?${_u}` : "";
+                    location.href = `${_boardActionPath}/${threadid}${_u}`;
+                } else {
+                    window.open(obj.dataset.link);
+                }                
+            }
+
+        },
+        listlink: () => {
+            let _s = new URLSearchParams(location.search.toLowerCase());                        
+            if (_boardActionPath.toLowerCase().indexOf("/board/") >= 0) {                
+                let _i = _s.get("boardid");                
+                let _ob = d.querySelector(`.community_list li[data-boardid='${_boardId}']`);
+                let _c = _ob ? _ob : d.querySelector(".community_list li[data-selected='true']");
+                _boardActionPath = _c !== null ? _c.dataset.url : d.querySelector(".community_list li:first-child").dataset.url;                    
+                if (_i != null) {
+                    _s.delete("boardid");
+                }
+            }
+            let _u = _s.toString();            
+            location.href = `${_boardActionPath}${(_u.length > 0 ? "?" : "")}${_u}`;
+        },
+        writelink: (threadid) => {
+            if (!mmCommunity.User.check()) { return false; }
+            threadid = threadid === undefined ? "" : threadid;   
+            if (_boardActionPath.toLowerCase().indexOf("/board/") >= 0 || _boardActionPath.toLowerCase().indexOf("/community/") >= 0 || _boardActionPath.toLowerCase().indexOf("/creators/promotion") >= 0) {                
+                location.href = `/board/write${threadid > 0 ? "/" : ""}${threadid}?boardid=${_boardId}&${new URLSearchParams(location.search).toString()}`;
+            }
+            else {
+                location.href = `${_boardActionPath}/write${threadid > 0 ? "/" : ""}${threadid}?${new URLSearchParams(location.search).toString()}`;
+            }            
+        },
+        tagsearch: (obj) => {
+            let oldURLSearch = new URLSearchParams(location.search.toLowerCase());
+            let URLSearch = new URLSearchParams();
+            if (oldURLSearch.has("headlineid") && oldURLSearch.get("headlineid").length > 0) {
+                URLSearch.set("headlineid", oldURLSearch.get("headlineid"));
+            }
+            URLSearch.set("searchkeywordtype", "thread_tags");            
+            URLSearch.set("keywords", obj.textContent);
+            location.href = `${_boardActionPath}?${URLSearch.toString()}`
+        },
+        list: (pageno, obj) => {
+            const _p = d.querySelector("[data-mm-boardlist]");            
+            let _headlineId = "", _searchKeywordType = "", _keywords = "", _searchtype = "", _directiontype = "";
+            let URLSearch = new URLSearchParams(location.search.toLowerCase());
+            
+            if (obj !== undefined && obj.hasAttribute("data-headlineid")) {
+                for (let _o of d.querySelectorAll("[data-mm-searchheadline]")) { _o.classList.remove("active") }
+                obj.classList.add("active");
+                _headlineId = obj.dataset.headlineid;
+                _searchtype = "headline";
+            } else if (URLSearch.has("headlineid")) {
+                _headlineId = URLSearch.get("headlineid");
+            }
+            if (obj !== undefined && obj.hasAttribute("data-mm-btnsearch")) {
+                _searchKeywordType = Array.from(obj.closest("[data-mm-search]").querySelectorAll(".select_option li")).filter(e => e.innerText == obj.closest("[data-mm-search]").querySelector("[data-mm-searchtype]").textContent)[0].dataset.searchkeywordtype;
+                _keywords = obj.closest("[data-mm-search]").querySelector("input[name='keywords']").value;
+                _searchtype = "keyword";
+            } else if (URLSearch.has("keywords")) {
+                _searchKeywordType = URLSearch.get("searchkeywordtype");
+                _keywords = URLSearch.get("keywords");
+            }
+            if (obj !== undefined && obj.hasAttribute("data-mm-btnboardsort")) {
+                for (let _o of d.querySelectorAll("[data-mm-btnboardsort]")) { _o.classList.remove("active") }
+                obj.classList.add("active");
+            }
+            
+            const f = new FormData();
+            f.append("headlineId", _headlineId);
+            const boardarea = obj?.closest("[data-mm-boardlistarea]");
+            if (boardarea && boardarea.querySelector("[data-mm-search] [data-mm-btnboardsort].active")) {
+                f.append("directionType", boardarea.querySelector("[data-mm-search] [data-mm-btnboardsort].active").dataset.directiontype);
+            }
+            f.append("pageno", pageno);
+            if (pageno > 1) {
+                f.append("blockStartNo", _p.querySelector("[data-pagingtype='thread'][data-mm-paging]").dataset.blockstartno);
+                f.append("blockStartKey", _p.querySelector("[data-pagingtype='thread'][data-mm-paging]").dataset.blockstartkey);
+            }
+            if (_keywords.length > 0 && d.querySelector("form[name='searchform'] [data-mm-searchbtnall]")) {
+                f.append("searchKeywordType", _searchKeywordType);
+                f.append("keywords", _keywords);                                
+                d.querySelector("form[name='searchform'] [data-mm-searchbtnall]").parentElement.style.display = "";
+                d.querySelectorAll("form[name='searchform'] button[data-mm-btnboardsort]")?.forEach((e) => { e.style.display = "none"; })
+                
+            }
+            else if (d.querySelector("form[name='searchform'] [data-mm-searchbtnall]")) {                 
+                d.querySelector("form[name='searchform'] [data-mm-searchbtnall]").parentElement.style.display = "none";
+                d.querySelectorAll("form[name='searchform'] button[data-mm-btnboardsort]").forEach((e) => { e.style.display = ""; })
+            }
+           
+            postData("GetList", f, "html").then((data) => {
+                if (mmCommon.isJsonData(data)) {
+                    const datajson = JSON.parse(data);
+                    modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                    
+                } else {
+                    d.querySelector("[data-mm-boardlist]").innerHTML = data;      
+                    URLSearch = new URLSearchParams(f);                                        
+                    URLSearch.set('pageno', d.querySelector("[data-mm-boardlist] [data-pagingtype='thread'][data-mm-paging] li.on") ? d.querySelector("[data-mm-boardlist] [data-pagingtype='thread'][data-mm-paging] li.on").textContent : 1);
+                    pagereload(URLSearch);
+                    if (obj?.closest("[data-mm-paging]")) { d.querySelector((d.querySelectorAll("[data-mm-thread]").length > 0 ? "[data-mm-boardlistarea]" : "body")).scrollIntoView({ behavior: "smooth" }); }
+                    if (d.querySelectorAll("[data-mm-thread]")?.length > 0) {
+                        let _threadid = d.querySelector("[data-mm-thread]").dataset.threadid;
+                        d.querySelector(`[data-mm-boardlist] [data-mm-listitem][data-threadid='${_threadid}']`)?.classList.add("on");
+                    }
+                    mmCommunity.Thread.listcustom();
+
+                    if (_searchtype == "keyword") {
+                        mmCommon.statisticsData("action", "search-keyword");
+                    }
+                }
+            });
+        },
+        listcustom: () => { },
+        issurveyAnswer: false,
+        surveyAnswer: (obj) => {
+            if (d.querySelector("[data-mm-thread] [data-mm-surveyarea]").classList.contains("done")) {
+                modal.alert({ message: "설문 가능 기간이 아닙니다.", onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }
+            if (!Thread.issurveyAnswer) {                
+                if (!mmCommunity.User.check()) { return; }                
+                let answerArr = [], checkvalue = true;
+                try {
+                    d.querySelectorAll("[data-mm-survey]").forEach((e) => {
+                        let _choice = [], _checkmin = e.querySelector("[data-mm-answer]").dataset.minlength, _checkmax = e.querySelector("[data-mm-answer]").dataset.maxlength;                        
+                        if (e.querySelectorAll("input").length > 0) {
+                            let _checkobj = e.querySelectorAll("input:checked"), _checklen = _checkobj.length;
+                            if (_checkmin > 0 && _checklen == 0) {
+                                modal.alert({ message: "답변 등록 후 설문 제출이 가능합니다.", onConfirm: { name: '', callback: function () { } } })                                
+                                e.querySelector("input").focus();
+                                throw new Error();
+                            }
+                            if (_checklen < _checkmin) {
+                                modal.alert({ message: `답변 등록 후 설문 제출이 가능합니다.<br>최소 ${_checkmin}개 이상 선택해 주세요.`, onConfirm: { name: '', callback: function () { } } })                                
+                                e.querySelector("input").focus();
+                                throw new Error();
+                            }
+                            if (_checklen > 0) {
+                                try {
+                                    _checkobj.forEach((c) => {
+                                        let _s_etc = c.closest("li").querySelector("input[type='text']");
+                                        if (_s_etc !== null && _s_etc.value.length == 0) {
+                                            modal.alert({ message: `답변 등록 후 설문 제출이 가능합니다.`, onConfirm: { name: '', callback: function () { } } }); _s_etc.focus();                                            
+                                            throw new Error();
+                                        }
+                                        _choice.push({ choiceId: c.dataset.choiceid, message: _s_etc !== null ? _s_etc.value : "" });
+                                    })
+                                } catch (error) { throw new Error(); }
+                            } else { _choice.push({ choiceId: "", message: ""}); }
+                        } else {
+                            if (_checkmin > 0 && e.querySelector("textarea").value.length == 0) {
+                                modal.alert({ message: "답변 등록 후 설문 제출이 가능합니다.", onConfirm: { name: '', callback: function () { } } })                                
+                                e.querySelector("textarea").focus();
+                                throw new Error();
+                            }
+                            _choice = [{ message: e.querySelector("textarea").value }];
+                        }
+                        answerArr.push({ questionId: e.querySelector("[data-mm-question]").dataset.questionid, choices: _choice });
+                    });
+                } catch (error) { checkvalue = false;  }
+                if (checkvalue) {
+                    Thread.issurveyAnswer = true;     
+                    const f = new FormData();
+                    f.append("threadId", obj.closest("[data-mm-thread]").dataset.threadid);
+                    f.append("answers", JSON.stringify(answerArr));
+                    postData("SurveyAnswer", f).then((data) => {
+                        if (data.ResultCode == 0) {                            
+                            d.querySelector("[data-mm-surveyarea] .survey").style.display = "none";
+                            d.querySelector("[data-mm-surveyarea] .survey_finish").style.display = "";
+                            d.querySelector("[data-mm-thread]").scrollIntoView({ behavior: "smooth" });
+                        } else if (data.ResultCode == 4) {
+                            modal.alert({ message: '답변 등록 후 설문 제출이 가능합니다.', onConfirm: { name: '', callback: function () { } } })                            
+                        } else if (data.ResultCode == 34009) {
+                            modal.alert({ message: '설문 가능 기간이 아닙니다.', onConfirm: { name: '', callback: function () { } } })                            
+                        } else if (data.ResultCode == 34010) {
+                            modal.alert({ message: '이미 등록한 설문 입니다.', onConfirm: { name: '', callback: function () { } } })                            
+                        } else {
+                            modal.alert({ message: (data.ResultMessage !== "" ? data.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                                                        
+                        }
+                        Thread.issurveyAnswer = false;
+                    }); 
+                }      
+            }
+        },      
+        isemotion: false,
+        emotion: (obj) => {            
+            if (!this.isemotion) {                
+                if (!mmCommunity.User.check()) { return; }
+                this.isemotion = true;
+                let _emotion = obj.dataset.emotion == "LIKE" ? "DISLIKE" : "LIKE";
+                const _threadid = obj.closest("[data-mm-thread]").dataset.threadid;
+                const f = new FormData();
+                f.append("threadId", _threadid);
+                f.append("emotion", _emotion);
+                postData("Emotion", f).then((data) => {
+                    if (data.ResultCode == 0) {
+                        obj.dataset.emotion = _emotion;
+                        if (_emotion == "LIKE") {
+                            obj.classList.remove("dislike_button");
+                            try { mmCommon.statisticsData("action", "like-thread"); } catch { }
+                        } else {
+                            obj.classList.add("dislike_button");
+                        }
+                        d.querySelectorAll(`[data-threadid='${_threadid}'] [data-mm-threadlikecount]`).forEach((e) => { e.textContent = data.ResultObject.likeCount; });
+                    } else if (data.ResultCode == 37001 || data.ResultCode == 37002) {
+                        modal.alert({message: "차단한 글과 댓글/답글에는 커뮤니티 활동이 제한됩니다.<br>활동을 하시려면 차단을 해제하세요.", onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                    else if (data.ResultCode == 34004) {
+                        mmCommunity.User.rejectpopup();
+                        
+                    } else {
+                        modal.alert({ message: "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요.", onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                    this.isemotion = false;
+                });                               
+            } 
+        },
+        iswrite: false,
+        write: (obj) => {
+            if (!mmCommunity.User.check()) { return; }
+            if (!mmCommunity.Thread.iswrite) {
+                const _p = obj.closest("[data-mm-boardwirte]");
+                const _e = editor != undefined && editor !== null ? _p.querySelector(`#${editor.context[0].id}`).parentNode : _p;
+                let _writetitle = _p.querySelector("input[name='writetitle']").value.replace(/</gi, '&lt;').replace(/>/gi, '&gt;');  
+                let _writecontent = _e.querySelector("[role='textbox']"), _writecontentimg = _writecontent.querySelectorAll("img");
+                let _imgtotalcnt = 0, _imgtotalsize = 0;
+                let _thumbUrl = "", _threadid;          
+                let _writeboardid = _p.querySelector("input[name='boardid']")?.value;
+                let _headlineid = 0;
+
+                if (_writeboardid == "") {                    
+                    return modal.alert({ message: '게시판을 선택해 주세요.', onConfirm: { name: '', callback: function () { } } });
+                }
+
+                const sh = _p.querySelector("[data-mm-searchhedline]");
+
+                if (sh && !sh.classList.contains("disable")) {
+                    if (sh.querySelector("li[data-selected='true']") === null) {
+                        return modal.alert({ message: '말머리를 선택해 주세요.', onConfirm: { name: '', callback: function () { } } });
+                    }
+                    _headlineid = sh.querySelector("li[data-selected='true']").dataset.headline;
+                }
+
+                if (_writetitle.trim() === '' || _writetitle.length < 2) {                                      
+                    return modal.alert({ message: '제목을 2자 이상 입력해 주세요.', onConfirm: { name: '', callback: function () { } } });
+                }                
+
+                _writecontentimg = Array.from(_writecontentimg).filter(function (_writecontentimg) { return !_writecontentimg.classList.contains("added_emoticon"); });
+                if (_writecontentimg.length > 0) {
+                    try {
+                        for (let _i of _writecontentimg) {
+                            if (_i.width < 82 || _i.height < 46) {
+                                modal.alert({ message: '등록되는 이미지는 반드시 82*46 이상의 크기로 등록 바랍니다.', onConfirm: { name: '', callback: function () { } } })                                
+                                throw new Error();
+                            }
+                            let _imgsize = _i.dataset.size;
+                            if (_imgsize != undefined && _imgsize !== false) {
+                                _imgtotalsize += (_imgsize / (1024 * 1024));
+                                _imgtotalcnt++;
+                            } else {
+                                modal.alert({ message: '이미지는 업로드 기능을 이용해 주세요.', onConfirm: { name: '', callback: function () { } } })                                                                
+                                throw new Error();
+                            }
+                        }
+                    } catch (e) { console.log(e); return false; }
+                }                
+
+                if (_imgtotalsize > 100 || _imgtotalcnt > 100) {                    
+                    return modal.alert({ message: '이미지는 최대 100MB,<br>최대 100장 등록 가능합니다.', onConfirm: { name: '', callback: function () { } } });
+                }
+
+                if ((editor != undefined && editor !== null && editor.context.summernote("isEmpty")) || (_writecontent.type === "textarea" && _writecontent.value.trim() === "")) {
+                    return modal.alert({ message: "내용을 입력해 주세요.", onConfirm: { name: '', callback: function () { } } });
+                }
+                else if (_writecontent.type !== "textarea" && Common.getPlainTextLength(_writecontent.innerHTML) > 10000) {
+                    return modal.alert({ message: "최대 10000자까지 입력 가능합니다.", onConfirm: { name: '', callback: function () { } } });
+                }
+                else if ((_writecontent.type !== "textarea" && Common.getPlainTextLength(_writecontent.innerHTML) < 2) || (_writecontent.type === "textarea" && _writecontent.value.trim().length < 2)) {
+                    return modal.alert({ message: "내용을 2자 이상 입력해 주세요.", onConfirm: { name: '', callback: function () { } } });
+                }
+                
+                if (_p.querySelector(".image_thumbnail li.on img") !== null) {
+                    _thumbUrl = _p.querySelector(".image_thumbnail li.on img").src;
+                }
+                else if (_writecontentimg.length > 0) {
+                    _thumbUrl = _writecontentimg[0].src;
+                }
+                else if (_writecontent.querySelectorAll("iframe").length > 0) {
+                    _thumbUrl = _writecontent.querySelectorAll("iframe")[0].dataset.thumnail;
+                    if (_thumbUrl === undefined) _thumbUrl = "https://dszw1qtcnsa5e.cloudfront.net/bin/forum/img/video_NEXON.png";
+                }
+
+                const f = new FormData();
+                if (_boardActionPath.toLowerCase().indexOf("/board/") >= 0) {
+                    f.append("boardid", _writeboardid);
+                }
+                f.append("threadid", _p.querySelector("input[name='threadid']")?.value)
+                f.append("headlineId", _headlineid);
+                f.append("title", _writetitle)
+                f.append("content", _writecontent.type === "textarea" ? _writecontent.value : _writecontent.innerHTML);
+                if (_p.querySelectorAll("[data-mm-tags] .item").length > 0) {
+                    _p.querySelectorAll("[data-mm-tags] .item")?.forEach((_i) => { f.append("tags", _i.querySelector("span").innerText.replace(/#/gi, '')); });    
+                } else {
+                    f.append("tags", "");
+                }
+                f.append("thumbnailImageUrl", _thumbUrl);
+                
+                mmCommunity.Thread.iswrite = true;
+                postData("Write", f).then((data) => {
+                    if (data.ResultCode == 0) {
+                        try { sessionStorage.setItem("gtagaction", JSON.stringify({ a: "register-thread" })); } catch { }                            
+                        // false : custom
+                        if (mmCommunity.Thread.writeSuccess(data)) {
+                            _threadid = data.ResultObject !== null && data.ResultObject !== undefined ? data.ResultObject.threadId : "";
+                            let _goURL = `${_boardActionPath}/${_threadid}`;        
+                            if (_boardActionPath.toLowerCase().indexOf("/board/") >= 0) {
+                                _goURL = `${_p.querySelector(`[data-mm-searchboard] ul li[data-boardid="${_writeboardid}"]`).dataset.url}/${_threadid}`;
+                            }                            
+                            location.href = _goURL;                            
+                        }
+                    } else if (data.ResultCode == 34004) {
+                        mmCommunity.User.rejectpopup();                    
+                    } else {
+                        let _returnmsg = data.ResultMessage ?? "";
+                        switch (data.ResultCode) {
+                            case -10001: _returnmsg = "사용할 수 없는 단어가 감지되어 비공개 처리되었습니다.<br>탐지 시스템은 지속적으로 학습하고 업데이트되며,<br>문의사항이 있을 경우 게임 내 고객센터로 보내주시면 감사하겠습니다. "; break;
+                            case 4: _returnmsg = _returnmsg.indexOf("text can be 2") >= 0 ? "내용을 2자 이상 입력해 주세요." : "게시판 정보가 없습니다."; break;                            
+                            case 6: _returnmsg = "연속적으로 글을 등록할 수 없습니다.<br>잠시 후에 다시 등록 부탁 드립니다."; break;                            
+                            case 34003: _returnmsg = "해당 게시판은 관리자 전용으로<br>글쓰기가 불가합니다."; break;                
+                            case 34002: _returnmsg = "사용할 수 없는 단어가 포함되어 있습니다.<br>확인 후 다시 입력 바랍니다."; break;
+                            case 34007: _returnmsg = "사용할 수 없는 단어가 포함되어 있습니다.<br>확인 후 다시 입력 바랍니다."; break;                            
+                            case 4e4: _returnmsg = "허용되지 않는 경로입니다.<br>이미지의 경우 업로드 기능을 이용해 주세요."; break;
+                        }
+                        _returnmsg = _returnmsg.indexOf("sticker can be max 50 registered") >= 0 ? "이모티콘은 50개까지 등록이 가능합니다." : (_returnmsg.indexOf("2 ~ 20000") >= 0 ? "내용은 최대 10000자까지 입력 가능합니다." : (_returnmsg.indexOf("tag can be 100") >= 0 ? "태그는 100자까지 입력 가능합니다." : _returnmsg));
+                        modal.alert({ message: (_returnmsg.length > 0 ? _returnmsg : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })    
+                    }
+                    mmCommunity.Thread.iswrite = false;
+                });
+            }
+        }
+        , writeSuccess: (data) => { return true; } // custom
+        , delete: (threadid) => {            
+            const f = new FormData();
+            f.append("threadid", threadid);
+            postData("DeleteThread", f).then((data) => {
+                if (data.ResultCode == 0) {
+                    try { sessionStorage.setItem("gtagaction", JSON.stringify({ a: "delete-thread", o: { threadId: threadid } })); } catch { }                            
+                    mmCommunity.Thread.listlink();
+                } else if (data.ResultCode == 34004) {
+                    mmCommunity.User.rejectpopup();
+                } else {
+                    modal.alert({ message: (data.ResultMessage.length > 0 ? data.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })
+                }
+            });
+        }
+        , hashtaglink: (obj) => {            
+            let URLSearch = new URLSearchParams();
+            URLSearch.set('pageno', 1);
+            URLSearch.set('searchkeywordtype', "THREAD_TAGS");
+            URLSearch.set('keywords', obj.textContent.replace("#", ""));
+            location.href = `/Search?${URLSearch.toString()}`            
+        }        
+    };
+
+    const Comment = {        
+       inputform: (obj, type) => {       
+
+            let objid = type == "new" ? obj.getAttribute("id") : "comment_editor_recomment";
+
+            var editor = `<div class="editor_add">
+            <div class="order_1"> ${ Data["boardStickerYN"] == "Y" ? `<button class="add_emoticon_button" onclick="${objid}.insertEmoticon()"><i class="icon_emoticon"></i></button>` : ""}
+             <label class="add_image_button">
+                <span></span>
+                <input type="file" accept="image/*">
+              </label>
+            </div>  
+            <div class="order_2">
+              <div class="comment_length">
+                <span class="length">0</span>
+                <span>/ 2,000</span>
+              </div>
+              <button data-type="comment" class="confirm_button">등록</button>
+            </div>
+          </div>`;
+
+            if (type == "new") {                
+                d.querySelector(`#${objid}`).insertAdjacentHTML("afterend", editor);                
+                comment_editor = new Editor(`#${objid}`, editorConfigComment);
+            } else {
+                let _btnwrite, _btncancel;
+                d.querySelectorAll("[data-mm-commentlistdata] [data-mm-commenteditor]")?.forEach((e) => {
+                    _btnwrite = e.closest("[data-mm-commentbottom]").querySelector(".write_button");
+                    _btncancel = e.closest("[data-mm-commentbottom]").querySelector(".cancel_button");
+                    _btnwrite ? _btnwrite.style.display = "" : ""; _btncancel ? _btncancel.style.display = "none" : ""; e.remove();
+                })                
+                let _p = obj.closest("[data-mm-commentlistdata]");
+                editor = `<div class="recomment_write_area" data-mm-commenteditor><div class="editor_area" data-mm-editorarea><div id="${objid}"></div> ${editor}</div></div>`;
+                _p.querySelector(`[data-mm-commentbottom]`).insertAdjacentHTML("beforeend", editor);
+                comment_editor_recomment = new Editor(`#${objid}`, editorConfigReComment);
+                if (type == "edit") {
+                    _p.querySelector("[data-mm-commentbottom]").classList.add("editbox");
+                    _p.querySelector("[data-mm-commentbottom] .cancel_button").textContent = "수정취소";
+                    comment_editor_recomment.insertEditData(_p.querySelector("[data-mm-commentdata]").innerHTML);                    
+                    comment_editor_recomment.context.summernote("focus");
+                } else {
+                    _p.querySelector("[data-mm-commentbottom]").classList.remove("editbox");                    
+                    _p.querySelector("[data-mm-commentbottom] .cancel_button").textContent = "답글취소";
+                }
+                if (_p.querySelector("[data-mm-commentbottom] .write_button")) { _p.querySelector("[data-mm-commentbottom] .write_button").style.display = "none"; }                
+                _p.querySelector("[data-mm-commentbottom] .cancel_button").style.display = "";                
+            }
+        },       
+        list: (pageno, obj, isscroll = true) => {
+            let _p = d.querySelector("[data-mm-thread]");
+            let _p_parentel;
+            if (_p !== null) {
+                _p_parentel = _p.parentElement;
+            } else {
+                _p = obj.closest("[data-mm-listitem]");
+                _p_parentel = _p;
+            }
+            
+            let _dtype = "DEFAULT";
+            let _bsort = "data-mm-btncommentsort";
+            if (d.querySelector(`[${_bsort}]`) !== null) {
+                if (obj !== undefined && obj.hasAttribute(_bsort)) {
+                    for (const _o of _p.querySelectorAll(`[data-mm-commentlist] [${_bsort}]`)) { _o.classList.remove("on"); }
+                    obj.classList.add("on");
+                    _dtype = obj.dataset.directiontype;
+                }
+                else if (_p_parentel.querySelector(`[data-mm-commentlist] [${_bsort}].on`) !== null) {
+                    _dtype = _p_parentel.querySelector(`[data-mm-commentlist] [${_bsort}].on`).dataset.directiontype;
+                }
+            }
+            const f = new FormData();
+            f.append("threadId", _p.dataset.threadid);
+            f.append("directionType", _dtype)
+            f.append("pageno", pageno);
+            let _paging = _p_parentel.querySelector("[data-mm-commentlist] [data-pagingtype='comment'][data-mm-paging]");
+            if (_paging !== null) {
+                f.append("blockStartNo", _paging.dataset.blockstartno);
+                f.append("blockStartKey", _paging.dataset.blockstartkey);
+            }
+            postData("GetComments", f, "html").then((data) => {
+                if (mmCommon.isJsonData(data)) {
+                    const datajson = JSON.parse(data);
+                    modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                    
+                } else {                   
+                    _p_parentel.querySelector("[data-mm-commentlist]").innerHTML = data;
+                    let _commenttotalcount = _p_parentel.querySelector("[data-mm-commentlist] [data-mm-commentinfo]")?.dataset.totalcount ?? 0;
+                    _p_parentel.querySelector("[data-mm-comment] [data-mm-commentcount]").textContent = _commenttotalcount;
+                    d.querySelectorAll(`[data-threadid='${_p.dataset.threadid}'] [data-mm-commentcount]`).forEach((e) => { e.textContent = _commenttotalcount; });
+                    
+                    if (obj != undefined && isscroll) {
+                        _p_parentel.querySelector("[data-mm-comment]").scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        },        
+        iswrite: false,
+        write: (e) => {
+            let obj = e.target;
+            if (!mmCommunity.User.check()) { return; }
+            const _i = obj.closest("[data-mm-editorarea]"), _e = _i.querySelector("[role='textbox']");
+            let _maxlength = _e.hasAttribute("maxlength") ? Number(_e.getAttribute("maxlength")) : 2000;
+            let _checkcontent = _e.type == "textarea" ? _e.value : _e.textContent;
+            if (_e.querySelectorAll("img").length > 1) {
+                modal.alert({ message: "댓글 작성 시 이모티콘 또는<br>이미지 중 1개만 등록이 가능합니다.", onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }
+            else if (_e.querySelectorAll("img").length > 0 && _e.querySelector("img").dataset.size === undefined) {
+                modal.alert({ message: "이미지는 업로드 기능을 이용해 주세요.", onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }
+            else if (_e.querySelectorAll("img").length == 0 && (_checkcontent.trim().length === 0 || _checkcontent.length < 2)) {
+                modal.alert({ message: "내용을 2자 이상 입력해 주세요.", onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }            
+            else if (_checkcontent.length > _maxlength) {
+                modal.alert({ message: `최대 ${_maxlength}자까지 입력 가능합니다.`, onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }
+            else if (langRegExp && langRegExp.test(_checkcontent)) {
+                modal.alert({ message: "한글/영어/숫자/특수문자만 입력 가능합니다.", onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }
+
+            if (!this.iswrite) {
+                let _t = obj.closest("[data-threadid]");
+                const f = new FormData();
+                f.append("content", _e.type == "textarea" ? _e.value : _e.innerHTML);
+                f.append("threadId", _t.dataset.threadid);
+                let _p = obj.closest("[data-mm-commentlistdata]"), _type = "";
+
+                if (_p) {                    
+                    if (obj.closest("[data-mm-commentbottom]").classList.contains("editbox")) {
+                        f.append("commentId", _p.dataset.commentid);
+                        _type = "edit";
+                    }
+                    else {
+                        f.append("parentId", _p.dataset.commentid);
+                        _type = "reply";
+                    }
+                }
+                
+                postData("WriteComment", f).then((data) => {
+                    if (data.ResultCode == 0) {
+                        editorReset(obj);
+                        mmCommunity.Comment.list(_type.length > 0 ? _t.querySelector("[data-pagingtype='comment'][data-mm-paging] li.on")?.textContent ?? 1 : 1, obj, false);
+                        var adoptcomment = d.querySelector(`[data-mm-listitem][data-threadid='${data.ResultObject.threadId}'] [data-mm-adoptcomment]`);
+                        if (adoptcomment && adoptcomment.querySelector("[data-adoptcommentid]")) {
+                            var adoptcommentid = adoptcomment.querySelector("[data-adoptcommentid]").dataset.adoptcommentid;
+                            if (adoptcommentid == f.get("commentId")) {
+                                mmCommunity.Comment.adoptCommentUpdate(data.ResultObject.threadId);
+                            }
+                        }
+                        try {
+                            if (f.get("parentId")) {
+                                mmCommon.statisticsData("action", "register-recomment", { commentId: data.ResultObject?.commentId ?? "" });
+                            } else {
+                                mmCommon.statisticsData("action", "register-comment", { commentId: data.ResultObject?.commentId ?? "" });
+                            }
+                        } catch { }                        
+                    } else if (data.ResultCode == 34004) {
+                        mmCommunity.User.rejectpopup();
+                    } else {
+                        let _returnmsg = data.ResultMessage ?? "";
+                        switch (data.ResultCode) {                            
+                            case 6: _returnmsg = "연속적으로 글을 등록할 수 없습니다.<br>잠시 후에 다시 등록 부탁 드립니다."; break;
+                            case 34003: _returnmsg = "해당 게시판은 관리자 전용으로<br>글쓰기가 불가합니다."; break;
+                            case 34002: _returnmsg = "사용할 수 없는 단어가 포함되어 있습니다.<br>확인 후 다시 입력 바랍니다."; break;
+                            case 34007: _returnmsg = "사용할 수 없는 단어가 포함되어 있습니다.<br>확인 후 다시 입력 바랍니다."; break;
+                            case 34015: _returnmsg = "댓글을 등록, 수정 할 수 없는 게시물 입니다."; break;
+                            case 37001:
+                            case 37002: _returnmsg = "차단한 글과 댓글/답글에는 커뮤니티 활동이 제한됩니다.<br>활동을 하시려면 차단을 해제하세요."; break;
+                            case 4e4: _returnmsg = "이미지는 업로드 기능을 이용해 주세요."; break;
+                        }
+                        _returnmsg = _returnmsg.indexOf("sticker can be max 50 registered") >= 0 ? "이모티콘은 50개까지 등록이 가능합니다." : (_returnmsg.indexOf("2 ~ 6000") >= 0 ? "최대 2000자까지 입력 가능합니다." : _returnmsg);
+                        modal.alert({ message: (_returnmsg.length > 0 ? _returnmsg : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                    this.iswrite = false;
+                });
+            }
+        },      
+        delete: (obj) => {
+            const _o = obj.closest("[data-mm-commentlistdata]");            
+            const f = new FormData();
+            f.append("commentId", _o.dataset.commentid);
+            postData("DeleteComment", f).then((data) => {
+                if (data.ResultCode == 0) {
+                    modal.alert({ message: "정상적으로 삭제되었습니다.", onConfirm: { name: '', callback: function () { } } })                        
+                    mmCommunity.Comment.list(d.querySelector("[data-mm-commentlist] [data-pagingtype='comment'][data-mm-paging] li.on")?.textContent ?? 1, _o);
+                    try { mmCommon.statisticsData("action", "delete-comment", { commentId: f.get("commentId")}); } catch { }
+                } else if (data.ResultCode == 34004) {
+                    mmCommunity.User.rejectpopup();
+                } else {
+                    modal.alert({ message: (data.ResultMessage.length > 0 ? data.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                        
+                }
+            });
+            
+        },
+        isemotion: false,
+        emotion: (obj) => {
+            if (!this.isemotion) {
+                if (!mmCommunity.User.check()) { return; }
+                this.isemotion = true;
+                let _emotion = obj.dataset.emotion == "LIKE" ? "DISLIKE" : "LIKE";
+                const f = new FormData();
+                f.append("commentid", obj.closest("[data-commentid]").dataset.commentid);
+                f.append("emotion", _emotion);
+                postData("EmotionComment", f).then((data) => {
+                    if (data.ResultCode == 0) {
+                        obj.dataset.emotion = _emotion;
+                        if (_emotion == "LIKE") {
+                            obj.classList.remove("dislike");
+                            try { mmCommon.statisticsData("action", "like-comment", { commentId: f.get("commentid") ?? "" }); } catch { }
+                        } else {
+                            obj.classList.add("dislike");
+                        }
+                        obj.querySelector("span").textContent = data.ResultObject.likeCount;
+
+                        mmCommunity.Comment.adoptCommentUpdate(data.ResultObject.threadId);
+                        
+                    } else if (data.ResultCode == 37001 || data.ResultCode == 37002) {
+                        modal.alert({ message: "차단한 글과 댓글/답글에는 커뮤니티 활동이 제한됩니다.<br>활동을 하시려면 차단을 해제하세요.", onConfirm: { name: '', callback: function () { } } })             
+                    } else if (data.ResultCode == 34004) {
+                        mmCommunity.User.rejectpopup();
+
+                    } else {
+                        modal.alert({ message: "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요.", onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                    this.isemotion = false;
+                });
+            }
+        },
+        adoptCommentUpdate: (threadid) => {
+            var adoptcomment = d.querySelector(`[data-mm-listitem][data-threadid='${threadid}'] [data-mm-adoptcomment]`);
+            if (adoptcomment) {
+                const f2 = new FormData();
+                f2.append("threadid", threadid);
+                postData("adoptComment", f2, "html").then((data2) => {
+                    if (!mmCommon.isJsonData(data2)) {
+                        adoptcomment.innerHTML = data2;
+                        adoptcomment.style.display = adoptcomment.querySelector("[data-adoptcommentid]") ? "" : "none";
+                    }
+                });
+            }
+        }
+    };
+
+    const User = {    
+        check: (isfunc = true) => {
+            if (!isLogin) {
+                if (isfunc) {
+                    modal.alert({
+                        message: "로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?",
+                        onConfirm: { name: '', callback: function () { mmCommon.login(); } },
+                        onCancel: { name: '', callback: function () { } }
+                    });
+                }
+                return false;
+            }
+            else if (communityUserId != "" && Number(communityUserId) == 0) {
+                if (isfunc) {
+                    modal.alert({ message: "커뮤니티에서 사용하실<br>닉네임을 설정해 주세요.", onConfirm: { name: '', callback: function () { } } })
+                }
+                return false;
+            }
+            else if (mmCommunity.Data.userbancheck) {
+                if (isfunc) {
+                    mmCommunity.User.rejectpopup(); return;
+                }
+                return false;
+            }
+            return true;
+        },
+        ispopup: false,
+        profilepopup: (obj) => {
+            if (!this.ispopup) {
+                this.ispopup = true;
+
+                const f = new FormData();
+                mmCommon.postData("/Profile/ProfilePopup", f, "html").then((data) => {
+                    if (mmCommon.isJsonData(data)) {
+                        const datajson = JSON.parse(data);
+                        modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                        
+                    } else {
+                        d.querySelector("[data-mm-popNickname] form[name='mmprofile']").innerHTML = data;
+                        modal.open('.profile_edit_modal');
+                    }
+                    this.ispopup = false;
+                });
+            }
+        },        
+        badgeedit: (obj) => {
+            const b = d.querySelector("[data-mm-btnbadgeedit]");
+            if (b && b.style.display == "none") {                
+                var list = [];
+                d.querySelectorAll("[data-mm-popbadgeedit] .badge_list ul li[data-badgeid]").forEach((e, i) => {
+                    list.push({ "badgeId": e.dataset.badgeid, "orderId": i + 1 })
+                });
+                const f = new FormData();
+                f.append("badgeSorts", JSON.stringify(list));
+                mmCommon.postData("/Profile/SetBadgeOrder", f).then((data) => {
+                    if (data.ResultCode == 0) {
+                        const pb = d.querySelector("[data-mm-profileinfo] .badge_list ul");                        
+                        const be = d.querySelectorAll("[data-mm-popbadgeedit] .badge_list ul li[data-badgeid]");
+
+                        pb?.querySelectorAll("li").forEach((e, i) => {
+                            if (be[i]) {
+                                e.querySelector("img").setAttribute("src", be[i].querySelector(".badge_image img").getAttribute("src"));
+                                e.querySelector("img").setAttribute("alt", be[i].querySelector(".badge_image img").getAttribute("alt"));
+                            }
+                        });
+                    } else {
+                        modal.alert({ message: "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요.", onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                });                
+            } else {                
+                obj.closest(".modal").querySelector("button.close_button").click();
+            }
+        },
+        rejectpopup: () => {
+            if (d.querySelector("[data-mm-popReject] .modal_body").innerHTML.trim().length == 0) {
+                mmCommon.postData("/Profile/RejectPopup", "", "html").then((data) => {
+                    if (mmCommon.isJsonData(data)) {
+                        const datajson = JSON.parse(data);
+                        modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })
+                    } else {
+                        d.querySelector("[data-mm-popReject] .modal_body").innerHTML = data;                        
+                        modal.open('.reject_modal');                
+                    }
+                });
+            } else {
+                modal.open('.reject_modal');                
+            }
+        },
+        list: (pageno, obj) => {
+            const _p = d.querySelector("[data-mm-boardlist]");     
+            let URLSearch = new URLSearchParams(location.search.toLowerCase());
+            let _myThreadsType = "";
+            if (obj != null && obj.hasAttribute("data-mythreadstype")) {
+                _myThreadsType = obj.dataset.mythreadstype;
+                [...obj.parentNode.children].forEach((e) => { e.dataset.active = "false"; e.classList.remove("on") });
+                obj.dataset.active = "true";
+                obj.classList.add("on");
+            } else {
+                [...d.querySelector("[data-mm-boadmy]").children].forEach((e) => { if (e.dataset.active == "true") { _myThreadsType = e.dataset.mythreadstype; } })
+            }            
+            const f = new FormData();
+            f.append("userid", d.querySelector("[data-mm-profileinfo]").dataset.userid);
+            f.append("myThreadsType", _myThreadsType);
+            f.append("pageno", pageno);
+            if (pageno > 1) {
+                f.append("blockStartNo", _p.querySelector("[data-mm-paging]").dataset.blockstartno);
+                f.append("blockStartKey", _p.querySelector("[data-mm-paging]").dataset.blockstartkey);
+            }            
+            mmCommon.postData("/Profile/GetList", f, "html").then((data) => {
+                if (mmCommon.isJsonData(data)) {
+                    const datajson = JSON.parse(data);
+                    modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })                    
+                } else {
+                    d.querySelector("[data-mm-boardlist]").innerHTML = data;
+                    URLSearch = new URLSearchParams(f);
+                    URLSearch.delete("userid");
+                    URLSearch.set('pageno', _p.querySelector("[data-mm-paging] li.on")?.textContent ?? 0);
+                    pagereload(URLSearch);
+                }
+            });
+        },      
+        issetuser :false,
+        setuser: () => {
+            const frm = d.querySelector("form[name='mmprofile']");
+            if (frm.querySelector("[name='nickname']").value.trim().length == 0) {
+                modal.alert({ message: "닉네임을 입력해 주세요.", onConfirm: { name: '', callback: function () { } } })                
+                return false;
+            }
+            if (!this.issetuser) {
+                this.issetuser = true;
+                const checkbadge = frm.querySelector("[data-mm-badgelist] li[data-selected='true']");
+                frm.querySelector("[name='profilebadge']").value = (checkbadge ? checkbadge.dataset.url : "");
+                const f = new FormData(frm);                
+                mmCommon.postData("/Profile/SetUser", f).then((data) => {
+                    this.issetuser = false;
+                    if (data.ResultCode != 0) {
+                        if (data.ResultCode == 34000) { modal.alert({ message: "이미 사용 중이거나 사용할 수 없는 닉네임입니다.", onConfirm: { name: '', callback: function () { } } }); }
+                        else if (data.ResultCode == 34004) { mmCommunity.User.rejectpopup(); }
+                        else if (data.ResultCode == 34002 || data.ResultCode == 34007) { modal.alert({ message: "사용할 수 없는 단어가 포함되어 있습니다.", onConfirm: { name: '', callback: function () { } } }); }
+                        else { modal.alert({ message: "닉네임 설정 시 한글, 영어, 숫자만 입력 가능 합니다.", onConfirm: { name: '', callback: function () { } } })  }                       
+                        return false;
+                    }
+                    if (data.ResultObject.profileImageUrl !== null) {
+                        d.querySelector("[data-mm-profileinfo] [data-id='profileimg']").src = data.ResultObject.profileImageUrl;
+                    }
+                    d.querySelector("[data-mm-profileinfo] [data-id='nickname']").textContent = data.ResultObject.nickname;                    
+                    d.querySelector("[data-mm-popnickname] button.close_button").click();
+                });
+            }
+        },
+        setgameinfoshow: (obj, event) => {
+            obj.disabled = true;
+            let isGameInfoView = obj.classList.contains("off");
+            const f = new FormData();
+            f.append("isGameInfoView", isGameInfoView);
+            mmCommon.postData("/Profile/SetGameInfoView", f).then((data) => {
+                obj.disabled = false;
+                if (data.ResultCode != 0) {
+                    return modal.alert({ message: (data.ResultMessage.length > 0 ? data.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } }) 
+                }
+                if (String(isGameInfoView) == data.ResultMessage.toLowerCase()) {
+                    myCharacterOnOffHandler(event);
+                }
+            });            
+        },
+        setcharacter: (obj) => {            
+            const sel = d.querySelector("[data-mm-characterlistarea] [data-characterlist] li.on");
+            var mc = d.querySelector("[data-mm-maincharacter]");
+            if (!sel) { return modal.alert({ message: "선택된 캐릭터가 없습니다.", onConfirm: { name: '', callback: function () { } } }); }
+            if (sel.dataset.charactername == mc.querySelector("[data-charactername]").innerText && sel.dataset.serverid == mc.querySelector("[data-serverid]").innerText) { return modal.close(obj); }
+            obj.disabled = true;
+            const f = new FormData();
+            f.append("charactername", sel.dataset.charactername);
+            f.append("worldid", sel.dataset.serverid);
+            mmCommon.postData("/Profile/SetGameInfoSelect", f, "html").then((data) => {
+                obj.disabled = false;                
+                if (mmCommon.isJsonData(data)) {
+                    const datajson = JSON.parse(data);
+                    modal.close(obj);
+                    return modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })
+                }                
+                mc.innerHTML = data;
+                modal.close(obj);
+                d.querySelectorAll("[data-mm-characterlistarea] [data-characterlist] li").forEach((item) => {
+                    if (item.charactername == mc.querySelector("[data-charactername]").innerText && item.erverid == mc.querySelector("[data-serverid]").innerText) {
+                        item.dataset.on = "true";
+                    } else {
+                        item.dataset.on = "false";
+                    }
+                })
+            });   
+        },
+        imgcheck: (obj) => {
+            const p = d.querySelector("[data-mm-popNickname] form[name='mmprofile']");
+            const v = p.querySelector("[data-mm-profileimgview]");
+            const defaultimg = p.querySelector("input[name='oldprofileimg']").value.trim().length > 0 ? p.querySelector("input[name='oldprofileimg']").value : v.dataset.default;
+
+            if (obj == undefined) {                
+                v.src = defaultimg;
+                return false;
+            }
+
+            if (obj.getAttribute("name") == "profileimg") {
+                const _file = obj.files[0];
+
+                if (_file != undefined && _file.size > 0) {
+
+                    if (_file.size > 10 * (1024 * 1024)) {
+                        modal.alert({ message: "이미지는 최대 10MB까지 등록 가능합니다.", onConfirm: { name: '', callback: function () { } } })                        
+                        v.src = defaultimg;
+                        return false;
+                    }
+                    else if (!(_file.type.toLowerCase().match("jpg|jpeg|png|bmp|gif"))) {
+                        modal.alert({ message: "JPG, GIF, PNG, BMP 이미지만 등록 가능합니다.", onConfirm: { name: '', callback: function () { } } })                                                
+                        v.src = defaultimg;
+                        return false;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        v.src = e.target.result;
+                        
+                    }
+                    reader.readAsDataURL(_file);
+                    if (p.querySelector("[data-mm-badgelist]") && p.querySelector("[data-mm-badgelist] li[data-selected='true']")) {
+                        p.querySelector("[data-mm-badgeselectedname] span").textContent = p.querySelector("[data-mm-badgeselectedname] span").dataset.msg;
+                        p.querySelector("[data-mm-badgelist] li[data-selected='true']").dataset.selected = false;
+                    }
+                } else {
+                    v.src = defaultimg;
+                }
+            }
+            else {
+                if (obj.dataset.url == "") {
+                    v.src = defaultimg;
+                } else {
+                    p.querySelector("input[name=profileimg]").value = "";
+                    v.src = obj.dataset.url;
+                }  
+            }
+        }        
+    };
+
+    const Report = {
+        pop: (obj) => {
+            if (!mmCommunity.User.check()) { return false; }
+            const _p = d.querySelector("[data-mm-popreport]")
+            let _type_kor, _type = obj.dataset.type, _reportid, _o;            
+
+            if (_type == "user") {
+                _type_kor = "작성자";
+                _reportid = obj.dataset.userid;
+                _o = obj.closest("[data-mm-userinfo]");
+                _p.querySelector(".report_title").style.display = "none"; 
+            }
+            else if (_type == "comment") {
+                _type_kor = "댓글";
+                _reportid = obj.dataset.commentid;
+                _o = d.querySelector(`[data-mm-commentlist][data-threadid="${obj.dataset.threadid}"] [data-mm-commentlistdata][data-commentid="${obj.dataset.commentid}"]`);
+                _p.querySelector(".report_title").style.display = "none";    
+            } else {
+                _type_kor = "게시글";
+                _reportid = obj.dataset.threadid;
+                _o = d.querySelector(`[data-mm-thread][data-threadid="${obj.dataset.threadid}"]`) ?? d.querySelector(`[data-mm-listitem][data-threadid="${obj.dataset.threadid}"]`);
+                _o.querySelectorAll("[data-mm-threadtitle] span").forEach((e) => { e.style.display != 'none' ? _p.querySelector("[data-mm-reportcontetns]").textContent = e.textContent : "" });                
+                _p.querySelector(".report_title").style.display = "";    
+            }
+
+            _p.querySelectorAll("[data-reason] li").forEach((e, i) => {  e.dataset.selected = false; e.classList.remove("on");  })
+            _p.querySelector("textarea").disabled = true;
+            _p.querySelector("textarea").style.display = "none";
+            _p.querySelector("textarea").value = "";            
+            _p.querySelector("[data-mm-reportuser]").textContent = _o.querySelector("[data-mm-usernickname]").textContent;
+            _p.querySelector("[data-mm-reportmsg]").textContent = `해당 ${_type_kor}${_type == "user" ? "를" : "을"} 아래와 같은 사유로 신고합니다.`;            
+            _p.querySelector(".selected span").textContent = _p.querySelector(".selected span").dataset.msg;
+            _p.querySelector("h1").textContent = `${_type_kor} 신고하기`;
+            const _b = _p.querySelector("[data-mm-btnreport]");
+            _b.dataset.reporttype = _type;
+            _b.dataset.reportid = _reportid;            
+
+            modal.open('.report_modal');
+        },
+        proc: (o) => {
+            let _p = d.querySelector("[data-mm-popreport]");
+            const _s = _p.querySelector(".selected span");
+            if (_s.dataset.msg == _s.textContent) {
+                return modal.alert({ message: "신고 사유를 선택해 주세요.", onConfirm: { name: '', callback: function () { modal.open('.report_modal'); } } })                
+            }
+            else if (_s.textContent == "기타" && _p.querySelector("textarea").value.length < 5) {
+                return modal.alert({ message: "신고 사유를 5자 이상 등록해 주세요.", onConfirm: { name: '', callback: function () { modal.open('.report_modal'); } } })                
+            }
+            const type = o.dataset.reporttype == "thread" ? "게시글" : o.dataset.reporttype == "user" ? "작성자" : "댓글";
+            const reasonid = _p.querySelector("[data-selected='true']").dataset.reasonid;
+            const f = new FormData();
+            f.append("type", o.dataset.reporttype);
+            f.append("reportid", o.dataset.reportid);
+            f.append("reason", `${_s.textContent}${(_s.textContent == "기타" ? "-" + _p.querySelector("textarea").value : "")}`);
+            f.append("reasonid", reasonid);
+            mmCommon.postData("/Board/Report", f).then((data) => {
+                d.querySelector("[data-mm-popreport] button.close_button").click();
+                if (data.ResultCode != 0) {
+                    if (data.ResultCode === 34011) {
+                        modal.alert({ message: `이미 신고한 ${type}입니다.`, onConfirm: { name: '', callback: function () { } } })                        
+                    } else if (data.ResultCode === 34004) {
+                        mmCommunity.User.rejectpopup();
+                    } else if (data.ResultCode === 4 && data.ResultMessage === 'invalid threadId') {
+                        modal.alert({ message: `삭제된 ${type}입니다.`, onConfirm: { name: '', callback: function () { } } })                        
+                    } else {
+                        modal.alert({ message: '신고 하는 도중 오류가 발생하였습니다.잠시 후 다시 시도해 주세요.', onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                    return false;
+                }
+                modal.alert({ message: '신고가 완료되었습니다.', onConfirm: { name: '', callback: function () { } } });
+                try {
+                    if (o.dataset.reporttype == "comment") {
+                        mmCommon.statisticsData("action", "report-comment", { commentId: o.dataset.reportid, reportReason: reasonid });
+                        if ((data.ResultObject?.reportCount ?? 0) >= 10) { mmCommon.statisticsData("action", "blind-comment", { commentId: o.dataset.reportid, reportReason: reasonid }); }
+                    } else if (o.dataset.reporttype == "thread") {
+                        mmCommon.statisticsData("action", "report-thread", {reportReason: reasonid });
+                        if ((data.ResultObject?.reportCount ?? 0) >= 10) { mmCommon.statisticsData("action", "blind-thread", { reportReason: reasonid }); }
+                    }
+                } catch { }
+
+            });
+        }
+    };
+
+    const Block = {
+        pop: (obj) => {
+            if (!mmCommunity.User.check()) { return false; }
+            if (obj.dataset.type != "user" && obj.dataset.blockstatus == "USER_BLOCK") {
+                let _blockobj = d.querySelectorAll(`[data-threadid='${obj.dataset.blockid}'] [data-blockcontent][data-type='thread']`);
+                if (obj.dataset.type == "comment") { _blockobj = obj.closest("[data-mm-commentlistdata]").querySelectorAll("[data-blockcontent]"); }
+                _blockobj.forEach((e) => { e.style.display = ""; e.parentNode.querySelector("[data-blockmsg]").style.display = "none"; })
+                return false;
+            }
+            var title, msg;
+            if (obj.dataset.type == "thread") {
+                title = "게시글 차단";
+                msg = "해당 게시글이 즉시 가려집니다.<br>원하시는 경우 차단은 다시 해제할 수도 있습니다.<br>게시글을 차단 하시겠습니까?";
+                if (obj.dataset.blockstatus != "NONE") {
+                    msg = "게시글 차단을 즉시 해제 하시겠습니까?";
+                }
+            } else if (obj.dataset.type == "comment") {
+                title = "댓글 차단";
+                msg = "해당 댓글이 즉시 가려집니다.<br>원하시는 경우 차단은 다시 해제할 수도 있습니다.<br>댓글을 차단 하시겠습니까?";
+                if (obj.dataset.blockstatus != "NONE") {
+                    msg = "댓글 차단을 즉시 해제 하시겠습니까?";
+                }
+            } else if (obj.dataset.type == "user") {
+                title = "작성자 차단";
+                msg = "해당 작성자의 모든 게시글/댓글이 즉시 가려집니다.<br>원하시는 경우 차단은 다시 해제할 수도 있습니다.<br>작성자를 차단 하시겠습니까?";
+                if (obj.dataset.blockstatus != "NONE") {
+                    msg = "작성자 차단을 즉시 해제 하시겠습니까?";
+                }
+            }
+            modal.alert({
+                title: title,message: msg, onConfirm: { name: '', callback: function (e) { mmCommunity.Block.proc(obj.dataset.type, obj.dataset.blockid, obj.dataset.blockstatus != "NONE"); } }, onCancel: { name: '', callback: function () { } } });
+        },
+        proc: (type, blockid, blockstatus) => {
+            let type_kor = type == "thread" ? "게시글" : type == "comment" ? "댓글" : "작성자";
+            const f = new FormData();
+            f.append("type", type);
+            f.append("blockid", blockid);
+            f.append("blockstatus", blockstatus);
+            mmCommon.postData("/Board/Block", f).then((data) => {
+                d.querySelector("[data-mm-popreport] button.close_button").click();
+                if (data.ResultCode != 0) {
+                    if (data.ResultCode == 37001) {
+                        modal.alert({
+                            message: `차단한 글과 댓글/답글에는 커뮤니티 활동이 제한됩니다.<br>활동을 하시려면 차단을 해제하세요.`, onConfirm: { name: '', callback: function () { } } })
+                    }
+                    else if (data.ResultCode == 37002) {
+                        modal.alert({ message: `이미 차단한 ${type_kor}입니다.`, onConfirm: { name: '', callback: function () { } } })
+                    } else if (data.ResultCode === 34004) {
+                        mmCommunity.User.rejectpopup();
+                    } else if (data.ResultCode == 4 && data.ResultMessage == 'invalid threadId') {
+                        modal.alert({ message: `삭제된 ${type_kor}입니다.`, onConfirm: { name: '', callback: function () { } } })
+                    } else {
+                        modal.alert({ message: '차단 하는 도중 오류가 발생하였습니다.잠시 후 다시 시도해 주세요.', onConfirm: { name: '', callback: function () { } } })
+                    }
+                    return false;
+                }
+                if (type != "comment") {
+                    try { sessionStorage.setItem("threadblockstatus", blockstatus); } catch { }
+                    if (type == "thread" && d.querySelector("[data-mm-boardtype='QNA']") === null) {
+                        location.href = location.href;
+                    } else {
+                        location.reload();
+                    }
+                } else {
+                    let comment = d.querySelector(`[data-mm-commentlistdata][data-commentid='${blockid}']`);
+                    let cmtpage = comment.closest("[data-mm-commentlist]").querySelector(`[data-mm-paging] li.on`)?.textContent ?? 1
+                    Comment.list(Number(cmtpage), comment, false);
+                    modal.alert({ message: `차단${(blockstatus == "true" ? " 해제" : "")}되었습니다.`, onConfirm: { name: '', callback: function () { } } })
+                }                
+            });
+        }
+    };
+
+    
+    async function postData(u, f, t = "json") {                   
+        let returnmag = "예기치 못한 오류가 발생하였습니다.<br>새로고침 후 다시 시도해 주세요.";
+        try {                        
+            const response = await fetch(`${_boardActionPath}/${u}`, { method: "POST", cache: "no-cache", headers: { "X-Requested-With": "XMLHttpRequest" }, body: f });            
+            if (!response.ok) {
+                return t == "json" ? { ResultCode: -9999, ResultMessage: returnmag } : `{"ResultCode" : -9999, "ResultMessage" : "${returnmag}"}`;   
+            }
+            return t == "json" ? response.json() : response.text(); 
+        } catch (e) {
+            return { ResultCode: -9999, ResultMessage: returnmag };            
+        }
+    };
+
+    function pagereload(u) {
+        if (history.pushState) {            
+            history.pushState(null, null, `?${u.toString()}`);
+        } 
+    }
+
+    //w.onpopstate = function (e) {
+    //    location.reload();
+    //};
+
+    d.addEventListener("DOMContentLoaded", () => {
+        let popnicknameform = d.querySelector("[data-mm-popNickname] form[name='mmprofile']");
+        if (popnicknameform) {
+            popnicknameform.addEventListener("change", (e) => {
+                const n = e.target.getAttribute("name");                
+                if (n && n == "profileimg") { mmCommunity.User.imgcheck(e.target); }                                  
+            });
+            popnicknameform.addEventListener("click", (e) => {
+                let option = popnicknameform.querySelector('.select_option');
+                if (e.target.parentElement.hasAttribute("data-mm-badgelist")) {
+                    mmCommunity.User.imgcheck(e.target);
+                    option.style.display = "none";
+                    popnicknameform.querySelector("[data-mm-badgeselectedname] span").textContent = e.target.textContent;
+                    popnicknameform.querySelectorAll("[data-mm-badgelist] li").forEach((i) => { i.dataset.selected = false; });
+                    e.target.dataset.selected = true;
+                }              
+            });
+        }
+
+        d.querySelectorAll("[data-mm-thread] .content img")?.forEach((i) => {
+            i.addEventListener("click", (e) => {
+                modal.image(e.target.getAttribute("src"));
+            });
+        })
+        
+        const _surveycheckbox = d.querySelectorAll("[data-mm-survey] input[type='checkbox']");
+        if (_surveycheckbox.length > 0) {
+            _surveycheckbox.forEach((i) => {
+                i.addEventListener("click", (e) => {
+                    let _p = e.currentTarget.closest("[data-mm-answer]"), _max = _p.dataset.maxlength;
+                    if (_max < _p.querySelectorAll("input:checked").length) {
+                        e.currentTarget.checked = false;
+                        modal.alert({ message: `최대 ${_max}개 선택 가능합니다.`, onConfirm: { name: '', callback: function () { } } })                        
+                    }
+                });
+            })
+        }
+
+        d.querySelector("form[name='searchform'] [data-mm-searchbtnall]")?.addEventListener("click", (e) => {
+            d.querySelector('form[name=searchform] input[type=text]').value = '';
+            d.querySelector('[data-mm-search] [data-mm-btnsearch]').click();
+        });
+
+        d.querySelectorAll("[data-mm-searchboard] .select_option li")?.forEach((i) => {
+            i.addEventListener("click", (e) => {
+                mmCommunity.Common.boardidchange(e.target);
+            });
+        });     
+
+        const _boardreportpop = d.querySelector("[data-mm-popreport]");
+        if (_boardreportpop) {
+            _boardreportpop.querySelectorAll("[data-reason] li").forEach((i) => {
+                i.addEventListener("click", (e) => {
+                    _boardreportpop.querySelector("textarea").disabled = e.target.textContent == "기타" ? false : true;
+                    _boardreportpop.querySelector("textarea").style.display = e.target.textContent == "기타" ? "" : "none";                    
+                });
+            })
+        }
+        if (d.querySelector("[data-mm-btnboardwrite]") && d.querySelector("[data-mm-quick] .write_button")) { d.querySelector("[data-mm-quick] .write_button").style.display = ""; }
+    });
+
+    w.addEventListener("load", () => {
+        if (d.querySelector("[data-mm-searchboard]") && Number(_boardId) > 0) {
+            const b = d.querySelector(`[data-mm-searchboard] .select_option li[data-boardid='${_boardId}']`);
+            const headlineId = Number(d.querySelector("[data-mm-searchhedline] input[name='headlineId']").value);            
+            if (b) {
+                d.querySelector("[data-mm-searchboard] [data-mm-selected] span").textContent = b.textContent;
+                mmCommunity.Common.boardidchange(b, headlineId);
+            }
+        }
+
+        if (d.querySelector("[data-mm-comment]")) {
+
+            if (d.querySelector("[data-mm-boardtype='QNA']") === null) {
+                d.querySelectorAll("[data-mm-comment]")?.forEach((i) => {
+                    i.addEventListener("click", (e) => {
+                        let _eobj = e.target;
+                        if (_eobj.dataset.type === "comment" && _eobj.classList.contains("confirm_button")) {
+                            mmCommunity.Comment.write(e);
+                        }
+                    })
+                });
+            }
+
+            d.querySelectorAll(`[data-mm-${d.querySelector("[data-mm-boardtype='QNA']") === null ? "commentlist" : "boardlist"}]`)?.forEach((i) => {
+                i.addEventListener("click", (e) => {
+                    if (e.target.dataset.type === "comment") {
+                        if (e.target.classList.contains("confirm_button")) {
+                            mmCommunity.Comment.write(e);
+                        }
+                        else if (e.target.classList.contains("edit_button") || e.target.classList.contains("write_button")) {
+                            if (mmCommunity.User.check()) {
+                                mmCommunity.Comment.inputform(e.target, e.target.classList.contains("edit_button") ? "edit" : "recomment");
+                            }
+                        }
+                        else if (e.target.classList.contains("delete_button")) {
+                            if (mmCommunity.User.check()) {
+                                let odelete = e.target;
+                                modal.alert({ message: '정말로 삭제하시겠습니까?', onConfirm: { name: '', callback: function (e) { mmCommunity.Comment.delete(odelete); } }, onCancel: { name: '', callback: function () { } } });
+                            }
+                        }
+                        else if (e.target.classList.contains("cancel_button")) {                            
+                            var _checkbtnwrite = e.target.parentElement.querySelector(".write_button") ?? e.target.closest("[data-mm-commentbottom]").querySelector(".write_button");
+                            if (_checkbtnwrite) { _checkbtnwrite.style.display = ""; _checkbtnwrite.parentElement.querySelector(".cancel_button").style.display = "none"; }
+                            else { e.target.style.display = "none"; }
+                            e.target.closest("[data-mm-commentlistdata]").querySelector("[data-mm-commentbottom] [data-mm-commenteditor]").remove();                            
+                        }                        
+                    }
+                    if (e.target.tagName == "IMG" && (e.target.classList.contains("attachment") || e.target.classList.contains("added_images"))) {
+                        modal.image(e.target.getAttribute("src"));
+                    }
+                })
+            });
+
+            if (d.querySelector("#comment_editor") !== null) {
+                mmCommunity.Comment.inputform(d.querySelector("#comment_editor"), "new");
+            }
+        }
+
+        try {    
+            var threadblockstatus = sessionStorage.getItem("threadblockstatus") ?? "";
+            if (threadblockstatus != "") {                                               
+                modal.alert({ message: `차단${(threadblockstatus == "true" ? " 해제" : "")}되었습니다.`, onConfirm: { name: '', callback: function () { } } })               
+                sessionStorage.removeItem("threadblockstatus");
+            }    
+        } catch { }
+        
+    });
+
+    return {
+        Data,
+        Thread,
+        Comment,
+        User,
+        Report,
+        Block,
+        Common
+    };
+})(window, document);
+
+var pop = new function () { };
+pop.open = function (obj) {
+    document.querySelector(`#${obj}`).style.display = "block";
+}
+pop.close = function (obj) {
+    document.querySelector(`#${obj}`).style.display = "none";
+}

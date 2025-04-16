@@ -1,0 +1,20 @@
+function _Platform()
+{
+	this.GetPlatformString = function()
+	{
+		return "Service";
+	}
+	
+	this.IsTestPlatform = function()
+	{
+		return false;
+	}
+	
+	this.IsServicePlatform = function()
+	{
+		return true;
+	}
+}
+
+var Platform = new _Platform();
+

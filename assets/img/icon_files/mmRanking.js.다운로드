@@ -1,0 +1,89 @@
+﻿(() => {
+    const d = document;
+    const w = window;
+
+    if (!w.mmRanking) {
+        w.mmRanking = {
+            baseurl: "/Ranking/List/",
+            imgpath: "",
+            islist: false,
+            list(pageno, obj) {
+                const alertobj = d.querySelector(".alert_modal");
+                if (alertobj && alertobj.style.display != "none") {
+                    return false;
+                }
+                if (!this.islist) {
+                    let s = d.querySelector("[data-searchtype='serverid'].on").dataset.serverid;
+                    let c = d.querySelector("[data-searchtype='classid'].on").dataset.classid;
+                    let search = "", serachtype = "";                    
+                    let frmreset = true;
+                    if (obj !== null && obj !== undefined && obj.hasAttribute("data-searchtype")) {
+                        serachtype = obj.dataset.searchtype;
+                        if (obj.dataset.searchtype == "serverid") {
+                            s = obj.dataset.serverid;
+                        }
+                        else if (obj.dataset.searchtype == "classid") {
+                            c = obj.dataset.classid;
+                        }
+                        else if (obj.dataset.searchtype == "search") {
+                            search = d.querySelector("input[name='search']").value;
+                            if (search.trim().length == 0) {
+                                return modal.alert({ message: "캐릭터명을 2~12자까지 입력해 주세요.", onConfirm: { name: '', callback: function () { d.querySelector("input[name='search']").focus(); } } });
+                            }
+                            obj.dataset.search = search;
+                            frmreset = false;
+                            d.querySelector("form[name='searchform'] [data-btnrefresh]").style.display = "";
+                        }
+                        else if (obj.dataset.searchtype == "charactername") {
+                            search = obj.dataset.charactername;
+                        }
+                    }
+                    this.reset(s, c, frmreset);
+                    const f = new FormData();
+                    f.append("t", d.querySelector("[data-ranktype].on").dataset.ranktype);
+                    f.append("pageno", pageno);
+                    f.append("s", s);
+                    f.append("c", c);
+                    f.append("search", search);
+                    this.islist = true;
+                    mmCommon.postData(`${this.baseurl}rankdata`, f, "html").then((data) => {
+                        this.islist = false;
+                        if (mmCommon.isJsonData(data)) {
+                            const datajson = JSON.parse(data);
+                            return modal.alert({ message: (datajson.ResultMessage.length > 0 ? datajson.ResultMessage : "서비스 이용에 불편을 드려 죄송합니다. <br>잠시 후에 다시 시도해주세요."), onConfirm: { name: '', callback: function () { } } })
+                        }
+                        if (serachtype == "search" && search.trim().length > 0 && data.indexOf("결과가 없습니다.") > -1) {
+                            return modal.alert({ message:"입력한 캐릭터명의<br>랭킹 정보를 찾을 수 없습니다.", onConfirm: { name: '', callback: function () { } } })
+                        }
+
+                        d.querySelector("[data-mm-rankinglist]").innerHTML = data;
+                        d.querySelector("body").scrollIntoView({ behavior: "smooth" });
+                        var searchvalue = d.querySelector("input[name='search']").value;
+                        if (searchvalue == d.querySelector("[data-searchtype='search']").dataset.search) {
+                            var searchitem = d.querySelector(`[data-mm-rankinglist] [data-charactername='${searchvalue}']`)
+                            if (searchitem) {
+                                searchitem.closest(".item").classList.add("on");
+                            }
+                        }
+                        
+                    });
+                }
+            },
+            reset(s, c = "0", frmreset = true) {
+                if (frmreset) { d.querySelector("form[name='searchform']").reset(); d.querySelector("form[name='searchform'] [data-btnrefresh]").style.display = "none"; }
+                //const mycharacter = d.querySelector("[data-mm-mycharacter]");
+                //const mycharacter_msg = mycharacter.querySelector("[data-mm-selected] [data-msg]");
+                //if (mycharacter_msg) { mycharacter_msg.innerText = mycharacter_msg.dataset.msg; }
+                //mycharacter.querySelectorAll("li").forEach((e) => {
+                //    e.classList.remove("on");
+                //    e.dataset.selected = false;
+                //    if (e.dataset.serverid == s && (c == "0" || (c != "0" && e.dataset.classid == c))) { e.classList.remove("disable"); }
+                //    else { e.classList.add("disable"); }
+                //})
+            }
+        };
+    }
+    d.addEventListener("DOMContentLoaded", () => {
+        d.querySelectorAll("[data-searchtype]").forEach((e) => { e.addEventListener("click", (o) => { mmRanking.list(1, o.target); }) })
+    });
+})();

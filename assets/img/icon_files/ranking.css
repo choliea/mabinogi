@@ -1,0 +1,1170 @@
+@import url(https://lwres.nexon.com/css/mabinogim/brand/common/font.css);
+@import url(https://lwres.nexon.com/css/mabinogim/brand/common/common.css);
+@import url(https://lwres.nexon.com/css/mabinogim/brand/common/modal.css);
+@import url(https://lwres.nexon.com/css/mabinogim/brand/common/loading.css);
+#mabinogim {
+  padding-top: 0;
+}
+#mabinogim:has(.gnb_wrap) {
+  padding-top: 103px;
+}
+#mabinogim:has(.gnb_wrap) .ranking, #mabinogim:has(.gnb_wrap) .container {
+  padding: 60px 60px 140px;
+}
+#mabinogim .ranking, #mabinogim .container {
+  position: relative;
+  max-width: 1740px;
+  margin: 0 auto;
+  padding: 10px 60px 140px;
+  min-height: calc(100vh - var(--pc-top-height));
+}
+#mabinogim .ranking .ranking_tab_wrap, #mabinogim .container .ranking_tab_wrap {
+  margin-bottom: 10px;
+  border-radius: 24px;
+  background: #FFF;
+  padding: 10px;
+}
+#mabinogim .ranking .ranking_tab_wrap .tab_list, #mabinogim .container .ranking_tab_wrap .tab_list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+#mabinogim .ranking .ranking_tab_wrap .tab_list a, #mabinogim .container .ranking_tab_wrap .tab_list a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 12px;
+  height: 40px;
+}
+#mabinogim .ranking .ranking_tab_wrap .tab_list a span, #mabinogim .container .ranking_tab_wrap .tab_list a span {
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 130%; /* 20.8px */
+}
+#mabinogim .ranking .ranking_tab_wrap .tab_list a.on, #mabinogim .container .ranking_tab_wrap .tab_list a.on {
+  background: #222632;
+}
+#mabinogim .ranking .ranking_tab_wrap .tab_list a.on span, #mabinogim .container .ranking_tab_wrap .tab_list a.on span {
+  color: #fff;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .ranking_tab_wrap .tab_list a:hover, #mabinogim .container .ranking_tab_wrap .tab_list a:hover {
+    background: #222632;
+  }
+  #mabinogim .ranking .ranking_tab_wrap .tab_list a:hover span, #mabinogim .container .ranking_tab_wrap .tab_list a:hover span {
+    color: #fff;
+  }
+}
+#mabinogim .ranking .page_empty, #mabinogim .container .page_empty {
+  position: relative;
+  border-top: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+}
+#mabinogim .ranking .page_empty span, #mabinogim .container .page_empty span {
+  padding: 187px 0;
+  color: #626262;
+  text-align: center;
+  font-size: 20px;
+  line-height: 140%; /* 28px */
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .server_class_wrap, #mabinogim .container .server_class_wrap {
+  position: relative;
+  padding: 30px;
+  background: #fff;
+  border-radius: 24px;
+  margin-bottom: 60px;
+}
+#mabinogim .ranking .server_class_wrap .select_area, #mabinogim .container .server_class_wrap .select_area {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+#mabinogim .ranking .server_class_wrap .select_area .select_box, #mabinogim .container .server_class_wrap .select_area .select_box {
+  position: relative;
+  width: 322px;
+  border-radius: 16px;
+}
+#mabinogim .ranking .server_class_wrap .select_area .select_box .selected, #mabinogim .container .server_class_wrap .select_area .select_box .selected {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+#mabinogim .ranking .server_class_wrap .select_area .select_box .select_option, #mabinogim .container .server_class_wrap .select_area .select_box .select_option {
+  top: 40px;
+  z-index: 2;
+  max-height: 180px;
+  overflow-y: auto;
+}
+#mabinogim .ranking .server_class_wrap .notice_area, #mabinogim .container .server_class_wrap .notice_area {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .server_class_wrap .notice_area span, #mabinogim .container .server_class_wrap .notice_area span {
+  color: #525252;
+  font-size: 12px;
+  line-height: 130%; /* 15.6px */
+  letter-spacing: -0.24px;
+}
+#mabinogim .ranking .server_class_wrap .notice_area span br, #mabinogim .container .server_class_wrap .notice_area span br {
+  display: none;
+}
+#mabinogim .ranking .server_class_wrap .notice_area button, #mabinogim .container .server_class_wrap .notice_area button {
+  margin-left: 20px;
+  border-radius: 12px;
+  background: #8C8C8C;
+  height: 30px;
+  padding: 7px 16px;
+  gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .server_class_wrap .notice_area button:hover, #mabinogim .container .server_class_wrap .notice_area button:hover {
+    background: #222632;
+  }
+}
+#mabinogim .ranking .character_search_wrap, #mabinogim .container .character_search_wrap {
+  position: relative;
+  border-radius: 24px;
+  margin-bottom: 30px;
+}
+#mabinogim .ranking .character_search_wrap .search_area, #mabinogim .container .character_search_wrap .search_area {
+  display: flex;
+  justify-content: center;
+}
+#mabinogim .ranking .character_search_wrap .search_area .my_character, #mabinogim .container .character_search_wrap .search_area .my_character {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 50%;
+}
+#mabinogim .ranking .character_search_wrap .search_area .my_character .text_box, #mabinogim .container .character_search_wrap .search_area .my_character .text_box {
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .character_search_wrap .search_area .my_character .text_box::before, #mabinogim .container .character_search_wrap .search_area .my_character .text_box::before {
+  content: "";
+  display: block;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='none'%3E%3Cpath fill='%23525252' d='M7 2h2v11H7z'/%3E%3Cpath fill='%238A8A8A' d='M10 2h2v11h-2z'/%3E%3Cpath fill='%23525252' d='M13 2h2v11h-2z'/%3E%3Cpath fill='%238A8A8A' stroke='%23525252' stroke-miterlimit='10' stroke-width='1.5' d='M10.779 7.835a.5.5 0 0 0 .452 0l1.244-.633a.5.5 0 0 1 .644.17l.771 1.17a.5.5 0 0 0 .387.224l1.403.086a.5.5 0 0 1 .468.468l.086 1.402a.5.5 0 0 0 .223.388l1.171.771a.5.5 0 0 1 .171.643l-.634 1.255a.5.5 0 0 0 0 .452l.633 1.244a.5.5 0 0 1-.17.644l-1.17.771a.5.5 0 0 0-.224.387l-.086 1.403a.5.5 0 0 1-.468.468l-1.402.086a.5.5 0 0 0-.388.223l-.77 1.17a.5.5 0 0 1-.645.17l-1.244-.631a.5.5 0 0 0-.452 0l-1.255.633a.5.5 0 0 1-.643-.171l-.771-1.17a.5.5 0 0 0-.387-.224l-1.403-.086a.5.5 0 0 1-.468-.468l-.086-1.402a.5.5 0 0 0-.223-.388l-1.17-.77a.5.5 0 0 1-.17-.645l.631-1.244a.5.5 0 0 0 0-.452l-.633-1.255a.5.5 0 0 1 .171-.643l1.17-.771a.5.5 0 0 0 .224-.387l.086-1.403a.5.5 0 0 1 .468-.468l1.403-.086a.5.5 0 0 0 .387-.223l.771-1.171a.5.5 0 0 1 .643-.171l1.255.634Z'/%3E%3Cpath fill='%23fff' d='M11 11c-.284 0-.474.34-.854 1.023l-.098.176c-.108.194-.162.29-.246.354-.085.064-.19.088-.4.135l-.19.044-.004.001c-.735.166-1.103.25-1.19.531-.089.282.163.577.666 1.165l.13.152.007.008c.138.162.209.244.24.346.03.096.023.199.005.39l-.004.04v.008l-.02.203c-.077.785-.115 1.178.114 1.352.23.174.576.015 1.267-.303l.178-.082.015-.006c.187-.086.283-.13.384-.13.101 0 .197.044.384.13l.015.006.178.082c.69.32 1.037.477 1.267.303.229-.173.191-.564.116-1.343l-.001-.009-.02-.203-.001-.008c-.02-.218-.03-.327 0-.43.032-.102.102-.184.241-.346l.007-.008.13-.152.002-.003c.502-.586.753-.88.665-1.162-.088-.281-.456-.365-1.191-.531l-.004-.001-.19-.044-.007-.002c-.205-.046-.309-.069-.393-.133-.084-.064-.138-.16-.246-.354l-.098-.176C11.474 11.34 11.284 11 11 11Z'/%3E%3C/svg%3E");
+  margin-right: 6px;
+  margin-top: -2px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .my_character .text_box span, #mabinogim .container .character_search_wrap .search_area .my_character .text_box span {
+  color: #525252;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  white-space: nowrap;
+}
+#mabinogim .ranking .character_search_wrap .search_area .my_character .select_box, #mabinogim .container .character_search_wrap .search_area .my_character .select_box {
+  position: relative;
+  height: 52px;
+  width: 100%;
+  max-width: 446px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .character_search_wrap .search_area .my_character .select_box .select_option, #mabinogim .container .character_search_wrap .search_area .my_character .select_box .select_option {
+  top: 55px;
+  z-index: 1;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character, #mabinogim .container .character_search_wrap .search_area .search_character {
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .text_box, #mabinogim .container .character_search_wrap .search_area .search_character .text_box {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .text_box::before, #mabinogim .container .character_search_wrap .search_area .search_character .text_box::before {
+  content: "";
+  display: block;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='none'%3E%3Ccircle cx='11' cy='7' r='6.25' fill='%23D9D9D9' stroke='%23525252' stroke-width='1.5'/%3E%3Cmask id='a' fill='%23fff'%3E%3Cpath d='M2 20a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v1H2v-1Z'/%3E%3C/mask%3E%3Cpath fill='%238A8A8A' d='M2 20a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v1H2v-1Z'/%3E%3Cpath fill='%23525252' d='M.5 20A6.5 6.5 0 0 1 7 13.5h8a6.5 6.5 0 0 1 6.5 6.5h-3a3.5 3.5 0 0 0-3.5-3.5H7A3.5 3.5 0 0 0 3.5 20h-3ZM20 21H2h18ZM.5 21v-1A6.5 6.5 0 0 1 7 13.5v3A3.5 3.5 0 0 0 3.5 20v1h-3ZM15 13.5a6.5 6.5 0 0 1 6.5 6.5v1h-3v-1a3.5 3.5 0 0 0-3.5-3.5v-3Z' mask='url(%23a)'/%3E%3Ccircle cx='9' cy='6' r='1' fill='%23525252'/%3E%3Ccircle cx='13' cy='6' r='1' fill='%23525252'/%3E%3Cpath fill='%23525252' d='M9 9h4v1H9z'/%3E%3C/svg%3E");
+  margin-right: 6px;
+  margin-top: -2px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .text_box span, #mabinogim .container .character_search_wrap .search_area .search_character .text_box span {
+  color: #525252;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  white-space: nowrap;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .text_box .refresh, #mabinogim .container .character_search_wrap .search_area .search_character .text_box .refresh {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='16' fill='none'%3E%3Cg clip-path='url(%23a)'%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='M1.748 7.049A6.844 6.844 0 0 1 3.982 2.73a6.785 6.785 0 0 1 7.546-1.022 6.81 6.81 0 0 1 2.393 1.98.78.78 0 0 1-.145 1.09.772.772 0 0 1-1.085-.145 5.235 5.235 0 0 0-4.18-2.077 5.24 5.24 0 0 0-3.431 1.276A5.285 5.285 0 0 0 3.31 7.05h.376a.772.772 0 0 1 .716.48.781.781 0 0 1-.169.848l-1.207 1.21a.772.772 0 0 1-1.094 0L.726 8.378a.779.779 0 0 1 .548-1.327l.474-.001Zm13.319-.637a.772.772 0 0 0-1.094 0l-1.206 1.21a.78.78 0 0 0 .547 1.328h.375a5.285 5.285 0 0 1-1.769 3.217 5.24 5.24 0 0 1-3.43 1.277 5.223 5.223 0 0 1-2.323-.54 5.248 5.248 0 0 1-1.845-1.52.776.776 0 0 0-.815-.275.773.773 0 0 0-.566.651.781.781 0 0 0 .155.575A6.798 6.798 0 0 0 5.482 14.3a6.785 6.785 0 0 0 7.534-1.03 6.845 6.845 0 0 0 2.234-4.319h.474a.772.772 0 0 0 .716-.48.781.781 0 0 0-.168-.848l-1.206-1.21Z' clip-rule='evenodd'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M.5 0h16v16H.5z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 17px 16px;
+  background-position: center center;
+  background-color: #2BAF7E;
+  border-radius: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: 500%;
+  margin-left: 6px;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .text_box .refresh:hover, #mabinogim .container .character_search_wrap .search_area .search_character .text_box .refresh:hover {
+    background-color: #319772;
+  }
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input, #mabinogim .container .character_search_wrap .search_area .search_character .search_input {
+  position: relative;
+  height: 52px;
+  width: 300px;
+  border: 1px solid #5C5C5C;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 16px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input {
+  width: 100%;
+  height: 100%;
+  padding: 0 40px 0 20px;
+  color: #525252;
+  font-size: 16px;
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input::placeholder, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input::placeholder {
+  color: #525252;
+  font-size: 16px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input:hover, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input:hover {
+  background: #fff;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input:focus, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input:focus {
+  background: #fff;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input:focus::placeholder, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input:focus::placeholder {
+  color: transparent;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input .search_button, #mabinogim .container .character_search_wrap .search_area .search_character .search_input .search_button {
+  position: absolute;
+  right: 16px;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .search_input .search_button::before, #mabinogim .container .character_search_wrap .search_area .search_character .search_input .search_button::before {
+  display: block;
+  content: "";
+  min-width: 21px;
+  width: 21px;
+  height: 23px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='21' height='23' fill='none'%3E%3Cpath fill='%235C5C5C' fill-rule='evenodd' d='M3.25 10.083a6.833 6.833 0 1 1 10.966 5.442 1.495 1.495 0 0 0-.631 1.153 1.494 1.494 0 0 0 .47 1.165l4.134 4.134a1.5 1.5 0 0 0 2.122-2.121l-3.05-3.05a9.802 9.802 0 0 0 2.656-6.723c0-5.43-4.403-9.833-9.834-9.833C4.653.25.25 4.653.25 10.083c0 5.431 4.403 9.834 9.833 9.834a1.5 1.5 0 1 0 0-3 6.833 6.833 0 0 1-6.833-6.834Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+#mabinogim .ranking .character_search_wrap .search_area .search_character .select_box + .search_input, #mabinogim .container .character_search_wrap .search_area .search_character .select_box + .search_input {
+  border-radius: 0 16px 16px 0;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul, #mabinogim .container .ranking_list_wrap .list_header ul {
+  display: flex;
+  background: #aaa;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul li, #mabinogim .container .ranking_list_wrap .list_header ul li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFF;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  height: 34px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul li:nth-child(1), #mabinogim .container .ranking_list_wrap .list_header ul li:nth-child(1) {
+  width: 20%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul li:nth-child(2), #mabinogim .container .ranking_list_wrap .list_header ul li:nth-child(2) {
+  width: 24%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul li:nth-child(3), #mabinogim .container .ranking_list_wrap .list_header ul li:nth-child(3) {
+  width: 26%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul li:nth-child(4), #mabinogim .container .ranking_list_wrap .list_header ul li:nth-child(4) {
+  width: 20%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_header ul li:nth-child(5), #mabinogim .container .ranking_list_wrap .list_header ul li:nth-child(5) {
+  width: 10%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list_empty, #mabinogim .container .ranking_list_wrap .list_area .list_empty {
+  border-top: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list_empty span, #mabinogim .container .ranking_list_wrap .list_area .list_empty span {
+  min-height: 220px;
+  height: 220px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list_empty span b, #mabinogim .container .ranking_list_wrap .list_area .list_empty span b {
+  color: #F65606;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item, #mabinogim .container .ranking_list_wrap .list_area .list .item {
+  position: relative;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 104px;
+  border-bottom: 1px solid #AAA;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item::before, #mabinogim .container .ranking_list_wrap .list_area .list .item::before {
+  display: block;
+  content: "";
+  width: 5px;
+  height: 100%;
+  background: #00B670;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.5s;
+  opacity: 0;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div, #mabinogim .container .ranking_list_wrap .list_area .list .item div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div dl {
+  display: flex;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div dl dt, #mabinogim .container .ranking_list_wrap .list_area .list .item div dl dt {
+  color: #5C5C5C;
+  font-size: 16px;
+  display: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div dl dd {
+  color: #5C5C5C;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) {
+  width: 20%;
+  padding-left: 46px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1) dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) dl {
+  width: 200px;
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dt, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dt {
+  display: flex;
+  padding: 4px 15px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 20px;
+  border: 1px solid #5C5C5C;
+  white-space: nowrap;
+  color: #5C5C5C;
+  font-size: 16px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dd {
+  margin-left: 12px;
+  white-space: nowrap;
+  color: #5C5C5C;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dd.up::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dd.up::before {
+  content: "";
+  display: block;
+  width: 10px;
+  min-width: 10px;
+  height: 8px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' fill='none'%3E%3Cpath fill='%23F65606' d='m0 8 5-8 5 8H0Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  margin-right: 6px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dd.down::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dd.down::before {
+  content: "";
+  display: block;
+  width: 10px;
+  min-width: 10px;
+  height: 8px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' fill='none'%3E%3Cpath fill='%2300B3E0' d='m0 0 5 8 5-8H0Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  margin-right: 6px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(2), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(2) {
+  width: 24%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(2) span, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(2) span {
+  font-size: 16px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(3), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(3) {
+  width: 26%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) {
+  width: 20%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl {
+  width: 158px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd {
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd::before {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #707070;
+  margin-right: 12px;
+  background-size: 25.68px 25.68px;
+  background-repeat: no-repeat;
+  background-position: 40% center;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: crisp-edges;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_1::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_1::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/warrior_icon_1_65811EBD4BEC0285.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_2::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_2::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/warrior_icon_2_82FBE98DCDF420BB.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_3::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_3::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/warrior_icon_3_753F0A05E1F5E2F8.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_4::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.warrior_4::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/warrior_icon_4_C1812DE239AB0EC8.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_1::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_1::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/archer_icon_1_6C95C482C969A5DA.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_2::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_2::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/archer_icon_2_A336FF08A4F57E5A.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_3::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_3::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/archer_icon_3_3406C778F7F364AF.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_4::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.archer_4::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/archer_icon_4_D99A386A246CC076.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_1::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_1::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/mage_icon_1_3399B9475E5FD2BA.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_2::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_2::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/mage_icon_2_8A3C50B41D1A1A9E.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_3::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_3::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/mage_icon_3_A721D69252722705.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_4::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.mage_4::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/mage_icon_4_A4B1DBBE4891A929.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_1::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_1::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/healer_icon_1_697BB71C01BA77C7.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_2::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_2::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/healer_icon_2_15972371DB794119.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_3::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_3::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/healer_icon_3_5F6E5C85FD70A719.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_4::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.healer_4::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/healer_icon_4_D9E416836A696233.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_1::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_1::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/bard_icon_1_410D309C3257989E.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_2::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_2::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/bard_icon_2_AD3BA497BA26AFE8.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_3::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_3::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/bard_icon_3_C866D0245C7D57D4.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_4::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd.bard_4::before {
+  background-image: url(https://lwi.nexon.com/m_mabinogim/brand/info/class/bard_icon_4_A3E490DA005190F0.png);
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) {
+  width: 10%;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl {
+  display: flex;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd {
+  font-size: 14px;
+  display: flex;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd.type_1::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd.type_1::before {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='47' height='43' fill='none'%3E%3Cpath fill='%23C43F4D' fill-rule='evenodd' d='M4.417 6.777.597 0l7.028 3.338 13.699 11.608L18.499 17l-1.719 2.456L4.417 6.777Zm20.294 20.196 4.73 3.954-4.067 2.245-.057.097-.107.187c-.883 1.597-.617 2.4.797 2.408.68.004 1.573-.215 2.68-.656l.293-.12.303-.13c.206-.09.418-.187.636-.29l.332-.161.342-.17.352-.181.18-.094.458-.247.475-.262.313-.178 5.49 4.589 1.664.494a3.544 3.544 0 0 0 .989 3.587 3.535 3.535 0 0 0 4.996-.163 3.535 3.535 0 0 0-.185-4.996 3.544 3.544 0 0 0-3.648-.736l-.609-1.626-5.028-5.227.18-.388.088-.19.167-.373.159-.362.15-.353.14-.343.162-.414.177-.477.132-.38c.415-1.241.596-2.223.541-2.945-.098-1.302-.804-1.58-2.117-.835l-.167.098a7.68 7.68 0 0 0-.263.168l-.183.125-1.816 3.914-3.644-3.788L28 25l-3.289 1.973Z' clip-rule='evenodd'/%3E%3Cpath fill='%23C43F4D' fill-rule='evenodd' d='m45.857 0-3.82 6.777-16.843 17.274.02.022-.222.185-.23.236-.023-.024-7.726 6.457 4.068 2.245.057.097.107.187c.883 1.597.617 2.4-.797 2.408-.68.004-1.573-.215-2.68-.656l-.293-.12-.304-.13c-.205-.09-.417-.187-.635-.29l-.332-.161-.342-.17-.352-.181-.18-.094-.365-.196a55.389 55.389 0 0 1-.187-.102l-.38-.21-.314-.179-5.49 4.589-3.207-3.44 5.028-5.227-.18-.388c-.03-.064-.06-.127-.088-.19l-.168-.373-.158-.362-.15-.353-.14-.343-.131-.332a24.4 24.4 0 0 1-.062-.163l-.118-.318a20.738 20.738 0 0 1-.056-.155l-.104-.303c-.416-1.241-.596-2.223-.541-2.945.113-1.492 1.022-1.64 2.73-.444l1.816 3.914 6.909-7.183-.023-.024.252-.213.2-.208.02.021L38.83 3.338 45.857 0ZM8.594 37.964l-1.664.494a3.545 3.545 0 0 1-.989 3.587 3.535 3.535 0 0 1-4.997-.163 3.535 3.535 0 0 1 .186-4.996 3.544 3.544 0 0 1 3.648-.736l.609-1.626 3.207 3.44Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd.type_2::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd.type_2::before {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='49' height='44' fill='none'%3E%3Cpath fill='%23CB9B27' d='M33.671 23.703c-.56 6.304-3.687 12.922-9.381 19.853-8.794-1.63-15.422-4.68-19.883-9.148-10.604-10.62-.084-24.14 10.63-16.407l.101-.38C18.63 5.228 34.99 8.865 33.671 23.703Zm.215-17.775.26-.26c8.592-8.395 20.148 2.238 12.179 13.634-2.298 3.286-5.62 6.133-9.968 8.542.298-1.295.502-2.577.615-3.845.37-4.17-.448-7.6-1.895-10.248-1.8-3.293-4.592-5.429-7.61-6.352-3.27-1-6.822-.591-9.824 1.35-.178.115-.355.236-.53.363C17.856-.68 29.5-3.829 33.886 5.928Z'/%3E%3C/svg%3E");
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd.type_3::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd.type_3::before {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='51' fill='none'%3E%3Cpath fill='%2342B5DD' fill-rule='evenodd' d='M46.363 25.22a1.838 1.838 0 0 1 1.713-.956l.15.015.21.032c.505.077.96.37 1.25.806.255.387.36.86.296 1.319l-.032.171-2.151 7.948a12.508 12.508 0 0 1-4.487 6.676l-.276.205-5.45 3.925a3.573 3.573 0 0 0-1.48 2.698l-.005.202v1.195c0 .39-.286.714-.654.762l-.094.006h-6.98a.756.756 0 0 1-.74-.672l-.007-.096v-6.17c0-2.412.583-4.788 1.699-6.926a15.475 15.475 0 0 1 4.335-5.146l.342-.253 4.9-3.53a1.793 1.793 0 0 1 1.367-.314 1.82 1.82 0 0 1 1.186.772 1.928 1.928 0 0 1-.081 2.27l-.102.117-3.334 3.553a.351.351 0 0 0-.067.377l.033.06.93 1.36c.051.077.129.127.217.143.066.01.134.002.194-.025l.058-.033 2.037-1.467.555-.964 2.58-4.635 1.888-3.425Zm-44.617-.94c.749-.11 1.497.27 1.863.94l4.184 7.557.653 1.151.185.316 2.038 1.467a.329.329 0 0 0 .426-.032l.043-.052.93-1.36a.352.352 0 0 0 .008-.383l-.042-.055L8.7 30.276a1.926 1.926 0 0 1-.182-2.386c.28-.411.7-.685 1.185-.773.43-.075.862.005 1.231.225l.136.089 4.901 3.53a15.48 15.48 0 0 1 4.677 5.4 14.97 14.97 0 0 1 1.692 6.5l.006.424v6.17c0 .391-.286.715-.654.762l-.093.006h-6.98a.756.756 0 0 1-.742-.671l-.005-.096V48.26c0-1.08-.49-2.1-1.325-2.776l-.16-.123-5.45-3.926a12.507 12.507 0 0 1-4.669-6.55l-.094-.33-2.151-7.948c-.054-.526-.023-1.055.265-1.492a1.84 1.84 0 0 1 1.1-.775l.15-.03.209-.031ZM24.986 0l.095.004c.47.039.868.364 1 .817l.023.092 1.748 8.55c.212.801.748 1.036 1.498.677l.095-.048 3.607-2.174.082-.045a1.02 1.02 0 0 1 1.022.078l.079.06.068.064.064.069c.26.307.314.739.138 1.1l-.044.083-2.174 3.607c-.409.767-.223 1.325.532 1.564l.097.028 8.55 1.748c.5.102.867.523.909 1.024l.004.095c0 .542-.382 1.01-.913 1.118l-8.55 1.748c-.835.22-1.055.793-.63 1.592l2.175 3.608c.227.376.185.852-.094 1.183l-.064.068-.068.064a1.02 1.02 0 0 1-1.101.138l-.082-.044-3.607-2.175c-.8-.425-1.372-.205-1.593.63l-1.748 8.55c-.102.5-.522.867-1.023.908l-.095.004-.095-.004a1.142 1.142 0 0 1-1-.816l-.024-.093-1.748-8.549c-.211-.802-.747-1.037-1.497-.678l-.095.048-3.607 2.175-.082.044a1.02 1.02 0 0 1-1.022-.078l-.08-.06-.068-.064-.063-.068a1.02 1.02 0 0 1-.139-1.101l.045-.082 2.174-3.608c.409-.767.223-1.325-.532-1.564l-.098-.028-8.549-1.748a1.142 1.142 0 0 1-.909-1.023l-.004-.095c0-.543.382-1.01.913-1.119l8.55-1.748c.835-.22 1.055-.793.63-1.592L15.51 9.327a1.019 1.019 0 0 1 .094-1.183l.063-.069.069-.063a1.02 1.02 0 0 1 1.1-.139l.083.045 3.607 2.174c.8.426 1.372.206 1.592-.63l1.748-8.55c.103-.5.523-.867 1.024-.908L24.986 0Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1) {
+  padding-left: 0;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1)::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1)::before {
+  content: "";
+  display: block;
+  width: 41px;
+  min-width: 41px;
+  height: 50px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='41' height='50' fill='none'%3E%3Cpath fill='%23B98318' d='M15 9h3v7h-3z'/%3E%3Cpath fill='%23D0942C' d='M19 9h3v7h-3z'/%3E%3Cpath fill='%23B98318' d='M23 9h3v7h-3z'/%3E%3Cpath fill='%23FCC93F' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3Cmask id='a' width='27' height='27' x='7' y='17' maskUnits='userSpaceOnUse' style='mask-type:alpha'%3E%3Cpath fill='%23FFC560' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23fff' fill-opacity='.2' d='m31.5 15-26 26L4 15h27.5Z'/%3E%3C/g%3E%3Cpath fill='%23B98318' d='M17.924 26.864V24.32h4.432V36h-2.848v-9.136h-1.584Z'/%3E%3C/svg%3E");
+  margin-right: 6px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1) {
+  padding-left: 0;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1)::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1)::before {
+  content: "";
+  display: block;
+  width: 41px;
+  min-width: 41px;
+  height: 50px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='41' height='50' fill='none'%3E%3Cpath fill='%237E7E7E' d='M15 9h3v7h-3z'/%3E%3Cpath fill='%23A0A0A0' d='M19 9h3v7h-3z'/%3E%3Cpath fill='%237E7E7E' d='M23 9h3v7h-3z'/%3E%3Cpath fill='%23C9C9C9' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3Cmask id='a' width='27' height='27' x='7' y='17' maskUnits='userSpaceOnUse' style='mask-type:alpha'%3E%3Cpath fill='%23FFC560' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23fff' fill-opacity='.2' d='m31.5 15-26 26L4 15h27.5Z'/%3E%3C/g%3E%3Cpath fill='%237E7E7E' d='M16.554 33.808a59.23 59.23 0 0 0 2.96-2.528 10.066 10.066 0 0 0 1.536-1.744c.416-.608.624-1.2.624-1.776 0-.437-.102-.779-.304-1.024-.203-.245-.507-.368-.912-.368-.406 0-.726.155-.96.464-.224.299-.336.725-.336 1.28h-2.64c.021-.907.213-1.664.576-2.272.373-.608.858-1.056 1.456-1.344a4.65 4.65 0 0 1 2.016-.432c1.269 0 2.224.325 2.864.976.65.65.976 1.499.976 2.544 0 1.141-.39 2.203-1.168 3.184-.779.97-1.771 1.92-2.976 2.848h4.32v2.224h-8.032v-2.032Z'/%3E%3C/svg%3E");
+  margin-right: 6px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1) {
+  padding-left: 0;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1)::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1)::before {
+  content: "";
+  display: block;
+  width: 41px;
+  min-width: 41px;
+  height: 50px;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='41' height='50' fill='none'%3E%3Cpath fill='%23976767' d='M15 9h3v7h-3z'/%3E%3Cpath fill='%23A07777' d='M19 9h3v7h-3z'/%3E%3Cpath fill='%23976767' d='M23 9h3v7h-3z'/%3E%3Cpath fill='%23D8B1A8' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3Cmask id='a' width='27' height='27' x='7' y='17' maskUnits='userSpaceOnUse' style='mask-type:alpha'%3E%3Cpath fill='%23FFC560' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23fff' fill-opacity='.2' d='m31.5 15-26 26L4 15h27.5Z'/%3E%3C/g%3E%3Cpath fill='%23976767' d='M16.472 27.616c.043-1.141.416-2.021 1.12-2.64.704-.619 1.659-.928 2.864-.928.8 0 1.483.139 2.048.416.576.277 1.008.656 1.296 1.136.299.48.448 1.019.448 1.616 0 .704-.176 1.28-.528 1.728-.352.437-.762.736-1.232.896v.064c.608.203 1.088.539 1.44 1.008.352.47.528 1.072.528 1.808 0 .661-.154 1.248-.464 1.76-.298.501-.741.896-1.328 1.184-.576.288-1.264.432-2.064.432-1.28 0-2.304-.315-3.072-.944-.757-.63-1.157-1.579-1.2-2.848h2.656c.01.47.144.843.4 1.12.256.267.63.4 1.12.4.416 0 .736-.117.96-.352.235-.245.352-.565.352-.96 0-.512-.165-.88-.496-1.104-.32-.235-.837-.352-1.552-.352h-.512v-2.224h.512c.544 0 .982-.09 1.312-.272.342-.192.512-.528.512-1.008 0-.384-.106-.683-.32-.896-.213-.213-.506-.32-.88-.32-.405 0-.71.123-.912.368-.192.245-.304.55-.336.912h-2.672Z'/%3E%3C/svg%3E");
+  margin-right: 6px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.on, #mabinogim .container .ranking_list_wrap .list_area .list .item.on {
+  background: #fff;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .list .item.on::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.on::before {
+  opacity: 1;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager, #mabinogim .container .ranking_list_wrap .list_area .pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 36px auto 0;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .current_range, #mabinogim .container .ranking_list_wrap .list_area .pager .current_range {
+  border-radius: 10px;
+  background: #AAA;
+  display: flex;
+  padding: 8px 20px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .current_range span, #mabinogim .container .ranking_list_wrap .list_area .pager .current_range span {
+  color: #fff;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination {
+  display: flex;
+  align-items: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul {
+  display: flex;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li {
+  font-size: 16px;
+  color: #525252;
+  margin-right: 4px;
+  cursor: pointer;
+  width: 44px;
+  height: 30px;
+  background: #fff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li.on, #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li:hover, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li.on, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li:hover {
+  color: #fff;
+  background: #2BAF7E;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li:first-child, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li:first-child {
+  margin-left: 26px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li:last-child, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li:last-child {
+  margin-right: 26px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.first_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.first_button {
+  width: 48px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.first_button::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.first_button::before {
+  display: block;
+  content: "";
+  min-width: 13px;
+  width: 13px;
+  height: 11px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='11' fill='none'%3E%3Cpath stroke='%23424242' stroke-linecap='round' stroke-width='2' d='M1 1v9'/%3E%3Cpath stroke='%23424242' stroke-linecap='round' stroke-width='3' d='m11 1.5-4 4 4 4'/%3E%3C/svg%3E");
+  transition: all 0.3s;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.first_button:hover::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.first_button:hover::before {
+    transform: translateX(-4px);
+  }
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.prev_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.prev_button {
+  width: 48px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.prev_button::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.prev_button::before {
+  display: block;
+  content: "";
+  min-width: 9px;
+  width: 9px;
+  height: 11px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='11' fill='none'%3E%3Cpath stroke='%23424242' stroke-linecap='round' stroke-width='3' d='m7 1.5-4 4 4 4'/%3E%3C/svg%3E");
+  transition: all 0.3s;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.prev_button:hover::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.prev_button:hover::before {
+    transform: translateX(-4px);
+  }
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.next_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.next_button {
+  width: 48px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.next_button::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.next_button::before {
+  display: block;
+  content: "";
+  min-width: 9px;
+  width: 9px;
+  height: 11px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='11' fill='none'%3E%3Cpath stroke='%23424242' stroke-linecap='round' stroke-width='3' d='m2 1.5 4 4-4 4'/%3E%3C/svg%3E");
+  transition: all 0.3s;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.next_button:hover::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.next_button:hover::before {
+    transform: translateX(4px);
+  }
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.last_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.last_button {
+  width: 48px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.last_button::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.last_button::before {
+  display: block;
+  content: "";
+  min-width: 13px;
+  width: 13px;
+  height: 11px;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='11' fill='none'%3E%3Cpath stroke='%23424242' stroke-linecap='round' stroke-width='2' d='M12 1v9'/%3E%3Cpath stroke='%23424242' stroke-linecap='round' stroke-width='3' d='m2 1.5 4 4-4 4'/%3E%3C/svg%3E");
+  transition: all 0.3s;
+}
+@media (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.last_button:hover::before, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.last_button:hover::before {
+    transform: translateX(4px);
+  }
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .write_button, #mabinogim .container .ranking_list_wrap .list_area .pager .write_button {
+  width: min-content;
+  padding: 10px 56px;
+  background: #00B670;
+  border-radius: 12px;
+  font-size: 18px;
+  color: #fff;
+  white-space: nowrap;
+  margin-left: auto;
+}
+#mabinogim .ranking .ranking_list_wrap .list_area .pager .write_button:hover, #mabinogim .container .ranking_list_wrap .list_area .pager .write_button:hover {
+  background: #0C8B5A;
+}
+
+@media (max-width: 1280px) {
+  #mabinogim:has(.gnb_wrap) {
+    padding-top: var(--mobile-top-height);
+  }
+  #mabinogim:has(.gnb_wrap) .ranking, #mabinogim:has(.gnb_wrap) .container {
+    padding: 10px 20px 50px;
+  }
+  #mabinogim .ranking, #mabinogim .container {
+    padding: 10px 20px 50px;
+    min-height: calc(100vh - var(--mobile-top-height));
+  }
+  #mabinogim .ranking .page_empty, #mabinogim .container .page_empty {
+    position: relative;
+    border-top: 1px solid #AAA;
+    border-bottom: 1px solid #AAA;
+  }
+  #mabinogim .ranking .page_empty span, #mabinogim .container .page_empty span {
+    padding: 115px 0;
+    font-size: 14px;
+    letter-spacing: -0.28px;
+  }
+  #mabinogim .ranking .server_class_wrap, #mabinogim .container .server_class_wrap {
+    margin-bottom: 20px;
+  }
+  #mabinogim .ranking .server_class_wrap .select_area, #mabinogim .container .server_class_wrap .select_area {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #mabinogim .ranking .server_class_wrap .select_area .select_box, #mabinogim .container .server_class_wrap .select_area .select_box {
+    padding: 10px 0;
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid #5C5C5C;
+  }
+  #mabinogim .ranking .server_class_wrap .select_area .select_box .selected, #mabinogim .container .server_class_wrap .select_area .select_box .selected {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  #mabinogim .ranking .server_class_wrap .select_area .select_box .selected span, #mabinogim .container .server_class_wrap .select_area .select_box .selected span {
+    color: #5C5C5C;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%; /* 20.8px */
+    letter-spacing: -0.32px;
+  }
+  #mabinogim .ranking .server_class_wrap .select_area .select_box .select_option, #mabinogim .container .server_class_wrap .select_area .select_box .select_option {
+    top: inherit;
+  }
+  #mabinogim .ranking .server_class_wrap .notice_area, #mabinogim .container .server_class_wrap .notice_area {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #mabinogim .ranking .server_class_wrap .notice_area span, #mabinogim .container .server_class_wrap .notice_area span {
+    color: #525252;
+    font-size: 12px;
+    line-height: 130%; /* 15.6px */
+    letter-spacing: -0.24px;
+    text-align: center;
+    word-break: keep-all;
+  }
+  #mabinogim .ranking .server_class_wrap .notice_area span br, #mabinogim .container .server_class_wrap .notice_area span br {
+    display: block;
+  }
+  #mabinogim .ranking .server_class_wrap .notice_area button, #mabinogim .container .server_class_wrap .notice_area button {
+    margin-top: 10px;
+    margin-left: 0px;
+    border-radius: 12px;
+    background: #8C8C8C;
+    height: 30px;
+    padding: 7px 16px;
+    gap: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+  }
+}
+@media (max-width: 1280px) and (hover: hover) and (min-width: 1280px) {
+  #mabinogim .ranking .server_class_wrap .notice_area button:hover, #mabinogim .container .server_class_wrap .notice_area button:hover {
+    background: #222632;
+  }
+}
+@media (max-width: 1280px) {
+  #mabinogim .ranking .character_search_wrap, #mabinogim .container .character_search_wrap {
+    position: relative;
+    border-radius: 24px;
+    margin-bottom: 30px;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area, #mabinogim .container .character_search_wrap .search_area {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .my_character, #mabinogim .container .character_search_wrap .search_area .my_character {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .my_character .select_box, #mabinogim .container .character_search_wrap .search_area .my_character .select_box {
+    height: 44px;
+    max-width: 100%;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .my_character .select_box .select_option, #mabinogim .container .character_search_wrap .search_area .my_character .select_box .select_option {
+    top: inherit;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character, #mabinogim .container .character_search_wrap .search_area .search_character {
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 100%;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input, #mabinogim .container .character_search_wrap .search_area .search_character .search_input {
+    position: relative;
+    height: 52px;
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid #5C5C5C;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input {
+    width: 100%;
+    height: 100%;
+    padding: 0 40px 0 20px;
+    color: #525252;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input input::placeholder, #mabinogim .container .character_search_wrap .search_area .search_character .search_input input::placeholder {
+    color: #525252;
+    font-size: 12px;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input:hover, #mabinogim .container .character_search_wrap .search_area .search_character .search_input:hover {
+    background: #fff;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input:focus, #mabinogim .container .character_search_wrap .search_area .search_character .search_input:focus {
+    background: #fff;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input:focus::placeholder, #mabinogim .container .character_search_wrap .search_area .search_character .search_input:focus::placeholder {
+    color: transparent;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input .search_button, #mabinogim .container .character_search_wrap .search_area .search_character .search_input .search_button {
+    position: absolute;
+    right: 16px;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .search_input .search_button::before, #mabinogim .container .character_search_wrap .search_area .search_character .search_input .search_button::before {
+    display: block;
+    content: "";
+    min-width: 21px;
+    width: 21px;
+    height: 23px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='21' height='23' fill='none'%3E%3Cpath fill='%235C5C5C' fill-rule='evenodd' d='M3.25 10.083a6.833 6.833 0 1 1 10.966 5.442 1.495 1.495 0 0 0-.631 1.153 1.494 1.494 0 0 0 .47 1.165l4.134 4.134a1.5 1.5 0 0 0 2.122-2.121l-3.05-3.05a9.802 9.802 0 0 0 2.656-6.723c0-5.43-4.403-9.833-9.834-9.833C4.653.25.25 4.653.25 10.083c0 5.431 4.403 9.834 9.833 9.834a1.5 1.5 0 1 0 0-3 6.833 6.833 0 0 1-6.833-6.834Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-size: cover;
+  }
+  #mabinogim .ranking .character_search_wrap .search_area .search_character .select_box + .search_input, #mabinogim .container .character_search_wrap .search_area .search_character .select_box + .search_input {
+    border-radius: 0 16px 16px 0;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_header, #mabinogim .container .ranking_list_wrap .list_header {
+    display: none;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list_empty, #mabinogim .container .ranking_list_wrap .list_area .list_empty {
+    border-top: 1px solid #AAA;
+    border-bottom: 1px solid #AAA;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list_empty span, #mabinogim .container .ranking_list_wrap .list_area .list_empty span {
+    min-height: 220px;
+    height: 220px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list_empty span b, #mabinogim .container .ranking_list_wrap .list_area .list_empty span b {
+    color: #F65606;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list, #mabinogim .container .ranking_list_wrap .list_area .list {
+    border-top: 1px solid #AAA;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item, #mabinogim .container .ranking_list_wrap .list_area .list .item {
+    position: relative;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    height: auto;
+    border-bottom: 1px solid #AAA;
+    gap: 10px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div, #mabinogim .container .ranking_list_wrap .list_area .list .item div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div dl {
+    display: flex;
+    align-items: center;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div dl dt, #mabinogim .container .ranking_list_wrap .list_area .list .item div dl dt {
+    font-size: 12px;
+    width: 44px;
+    margin-right: 16px;
+    display: block;
+    white-space: nowrap;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div dl dd {
+    font-size: 12px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) {
+    width: 100%;
+    flex-direction: column;
+    padding-left: 0;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dt, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(1) dl dt {
+    margin-right: 0;
+    width: auto;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(2), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(2) {
+    width: 100%;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(2) span, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(2) span {
+    font-size: 16px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(3), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(3) {
+    width: 100%;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) {
+    width: 100%;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl {
+    width: 100%;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd {
+    display: flex;
+    align-items: center;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(4) dl dd::before {
+    width: 26px;
+    height: 26px;
+    margin-right: 6px;
+    background-size: 19.26px 19.26px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5), #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) {
+    width: 100%;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl {
+    display: flex;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd {
+    font-size: 12px;
+    display: flex;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd::before, #mabinogim .container .ranking_list_wrap .list_area .list .item div:nth-child(5) dl dd::before {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1) {
+    padding-left: 0;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1)::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.rank01 div:nth-child(1)::before {
+    content: "";
+    display: block;
+    width: 41px;
+    min-width: 41px;
+    height: 50px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='41' height='50' fill='none'%3E%3Cpath fill='%23B98318' d='M15 9h3v7h-3z'/%3E%3Cpath fill='%23D0942C' d='M19 9h3v7h-3z'/%3E%3Cpath fill='%23B98318' d='M23 9h3v7h-3z'/%3E%3Cpath fill='%23FCC93F' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3Cmask id='a' width='27' height='27' x='7' y='17' maskUnits='userSpaceOnUse' style='mask-type:alpha'%3E%3Cpath fill='%23FFC560' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23fff' fill-opacity='.2' d='m31.5 15-26 26L4 15h27.5Z'/%3E%3C/g%3E%3Cpath fill='%23B98318' d='M17.924 26.864V24.32h4.432V36h-2.848v-9.136h-1.584Z'/%3E%3C/svg%3E");
+    margin-left: -6px;
+    margin-right: 0px;
+    margin-bottom: 10px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1) {
+    padding-left: 0;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1)::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.rank02 div:nth-child(1)::before {
+    content: "";
+    display: block;
+    width: 41px;
+    min-width: 41px;
+    height: 50px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='41' height='50' fill='none'%3E%3Cpath fill='%237E7E7E' d='M15 9h3v7h-3z'/%3E%3Cpath fill='%23A0A0A0' d='M19 9h3v7h-3z'/%3E%3Cpath fill='%237E7E7E' d='M23 9h3v7h-3z'/%3E%3Cpath fill='%23C9C9C9' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3Cmask id='a' width='27' height='27' x='7' y='17' maskUnits='userSpaceOnUse' style='mask-type:alpha'%3E%3Cpath fill='%23FFC560' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23fff' fill-opacity='.2' d='m31.5 15-26 26L4 15h27.5Z'/%3E%3C/g%3E%3Cpath fill='%237E7E7E' d='M16.554 33.808a59.23 59.23 0 0 0 2.96-2.528 10.066 10.066 0 0 0 1.536-1.744c.416-.608.624-1.2.624-1.776 0-.437-.102-.779-.304-1.024-.203-.245-.507-.368-.912-.368-.406 0-.726.155-.96.464-.224.299-.336.725-.336 1.28h-2.64c.021-.907.213-1.664.576-2.272.373-.608.858-1.056 1.456-1.344a4.65 4.65 0 0 1 2.016-.432c1.269 0 2.224.325 2.864.976.65.65.976 1.499.976 2.544 0 1.141-.39 2.203-1.168 3.184-.779.97-1.771 1.92-2.976 2.848h4.32v2.224h-8.032v-2.032Z'/%3E%3C/svg%3E");
+    margin-right: 0px;
+    margin-left: -6px;
+    margin-bottom: 10px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1), #mabinogim .container .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1) {
+    padding-left: 0;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1)::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.rank03 div:nth-child(1)::before {
+    content: "";
+    display: block;
+    width: 41px;
+    min-width: 41px;
+    height: 50px;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='41' height='50' fill='none'%3E%3Cpath fill='%23976767' d='M15 9h3v7h-3z'/%3E%3Cpath fill='%23A07777' d='M19 9h3v7h-3z'/%3E%3Cpath fill='%23976767' d='M23 9h3v7h-3z'/%3E%3Cpath fill='%23D8B1A8' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3Cmask id='a' width='27' height='27' x='7' y='17' maskUnits='userSpaceOnUse' style='mask-type:alpha'%3E%3Cpath fill='%23FFC560' d='M20.057 19.086a1 1 0 0 0 .904-.001l2.234-1.135a1 1 0 0 1 1.288.341l1.385 2.1a1 1 0 0 0 .774.448l2.519.153a1 1 0 0 1 .938.938l.152 2.519a1 1 0 0 0 .448.774l2.102 1.386a1 1 0 0 1 .343 1.286l-1.139 2.253a1 1 0 0 0 .001.904l1.135 2.234a1 1 0 0 1-.341 1.288l-2.1 1.385a1 1 0 0 0-.448.774l-.153 2.519a1 1 0 0 1-.938.937l-2.519.153a1 1 0 0 0-.774.448l-1.385 2.1a1 1 0 0 1-1.288.342l-2.234-1.135a1 1 0 0 0-.904 0l-2.253 1.137a1 1 0 0 1-1.286-.342l-1.386-2.102a1 1 0 0 0-.774-.448l-2.519-.153a1 1 0 0 1-.938-.937l-.152-2.519a1 1 0 0 0-.448-.774l-2.1-1.385a1 1 0 0 1-.342-1.288l1.135-2.234a1 1 0 0 0 0-.904l-1.138-2.253a1 1 0 0 1 .343-1.286l2.102-1.386a1 1 0 0 0 .447-.774l.154-2.52a1 1 0 0 1 .937-.937l2.519-.153a1 1 0 0 0 .774-.447l1.386-2.103a1 1 0 0 1 1.286-.342l2.253 1.139Z'/%3E%3C/mask%3E%3Cg mask='url(%23a)'%3E%3Cpath fill='%23fff' fill-opacity='.2' d='m31.5 15-26 26L4 15h27.5Z'/%3E%3C/g%3E%3Cpath fill='%23976767' d='M16.472 27.616c.043-1.141.416-2.021 1.12-2.64.704-.619 1.659-.928 2.864-.928.8 0 1.483.139 2.048.416.576.277 1.008.656 1.296 1.136.299.48.448 1.019.448 1.616 0 .704-.176 1.28-.528 1.728-.352.437-.762.736-1.232.896v.064c.608.203 1.088.539 1.44 1.008.352.47.528 1.072.528 1.808 0 .661-.154 1.248-.464 1.76-.298.501-.741.896-1.328 1.184-.576.288-1.264.432-2.064.432-1.28 0-2.304-.315-3.072-.944-.757-.63-1.157-1.579-1.2-2.848h2.656c.01.47.144.843.4 1.12.256.267.63.4 1.12.4.416 0 .736-.117.96-.352.235-.245.352-.565.352-.96 0-.512-.165-.88-.496-1.104-.32-.235-.837-.352-1.552-.352h-.512v-2.224h.512c.544 0 .982-.09 1.312-.272.342-.192.512-.528.512-1.008 0-.384-.106-.683-.32-.896-.213-.213-.506-.32-.88-.32-.405 0-.71.123-.912.368-.192.245-.304.55-.336.912h-2.672Z'/%3E%3C/svg%3E");
+    margin-right: 0px;
+    margin-left: -6px;
+    margin-bottom: 10px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.on, #mabinogim .container .ranking_list_wrap .list_area .list .item.on {
+    background: #fff;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .list .item.on::before, #mabinogim .container .ranking_list_wrap .list_area .list .item.on::before {
+    opacity: 1;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager, #mabinogim .container .ranking_list_wrap .list_area .pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 20px auto;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .current_range, #mabinogim .container .ranking_list_wrap .list_area .pager .current_range {
+    border-radius: 10px;
+    background: #AAA;
+    display: flex;
+    padding: 8px 20px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .current_range span, #mabinogim .container .ranking_list_wrap .list_area .pager .current_range span {
+    color: #fff;
+    font-size: 12px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul {
+    display: flex;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li {
+    font-size: 10px;
+    color: #525252;
+    margin-right: 4px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li.on, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li.on {
+    color: #fff;
+    background: #2BAF7E;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li:first-child, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li:first-child {
+    margin-left: 0px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination ul li:last-child, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination ul li:last-child {
+    margin-right: 0;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.first_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.first_button {
+    width: 32px;
+    height: 23px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0%;
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: -60px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.prev_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.prev_button {
+    width: 32px;
+    height: 23px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: -20px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.next_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.next_button {
+    width: 32px;
+    height: 23px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 20px;
+  }
+  #mabinogim .ranking .ranking_list_wrap .list_area .pager .pagination button.last_button, #mabinogim .container .ranking_list_wrap .list_area .pager .pagination button.last_button {
+    width: 32px;
+    height: 23px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 60px;
+  }
+}

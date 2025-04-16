@@ -1,0 +1,411 @@
+var NgbCaptchaLogin = new function __NgbCaptchaLogin()
+{
+	var _isLoginProcessing = false;
+	
+	var _header;
+	var _hashKey;
+	var __JOLABVHKBCISAD0G;
+	var __YVLIKN7DNYCRKANB;
+    var __B5UX9FVV0IXQRYRP;
+    var _accesscode;
+    var _strRedirect;
+
+    var _isLogin2;
+    var _callBackMethod;
+
+	var _hashtimer;
+	
+	var _isInvalidPasswordHashKeyString = false;
+    var _isFailover = false;
+    var _isSLogin = '0';
+    var _isKeepLogin = '0';
+	
+    this.SetData = function (_JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, _B5UX9FVV0IXQRYRP, strRedirect, accesscode, isSLogin )
+	{
+		__JOLABVHKBCISAD0G = _JOLABVHKBCISAD0G;
+		__YVLIKN7DNYCRKANB = _YVLIKN7DNYCRKANB;
+		__B5UX9FVV0IXQRYRP = _B5UX9FVV0IXQRYRP;
+		_strRedirect = strRedirect;
+        _accesscode = accesscode;
+        _isSLogin = isSLogin;
+	}
+	
+	this.InitLoginProcessing = function()
+	{
+		_isLoginProcessing = false;
+	}
+
+    this.SetKeepLogin = function (isKeeplogin) {
+        _isKeepLogin = isKeeplogin;
+    }
+
+	this.SubmitLogin = function()
+	{
+		var strDomain = NgbCaptchaLogin.GetLoginURL();
+		var strEncData = arguments [ 1 ][ 0 ];
+		var strEncCaptchaToken = arguments [ 1 ][ 1 ];
+		var strRedirect = arguments[ 1 ][ 2 ];
+        var strAccesscode = arguments [ 1 ][ 3 ];
+		var isLogin2 = arguments [ 1 ][ 4 ];
+        var strCallBackMethod = arguments[1][5];
+        var isSLogin = arguments[1][6];
+		
+		if ( strEncData == 'Error' )
+		{
+			alert( "로그인 처리과정 중 오류가 발생하였습니다." );
+			return false;
+		}
+		
+		if ( _isLoginProcessing )
+		{
+			alert( "로그인 하는 중입니다. 잠시만 기다려주세요." );
+			return false;
+		}
+		_isLoginProcessing = true;
+		
+		if( isLogin2 == false )
+		{
+		    NgbClientForm.AddChildForSubform( 'strEncData', strEncData );
+            NgbClientForm.AddChildForSubform( 'strAccesscode', strAccesscode );
+		    NgbClientForm.AddChildForSubform( 'strEncCaptchaToken', strEncCaptchaToken );
+            
+            if ( typeof( strRedirect ) != 'undefined' )
+				NgbClientForm.AddChildForSubform( 'strRedirect', strRedirect );
+            else
+                NgbClientForm.AddChildForSubform( 'strRedirect', escape( document.location.href ) );
+            
+            NgbClientForm.AddChildForSubform( 'isCaptchaLogin', "1" );
+            NgbClientForm.AddChildForSubform( 'isSLogin', isSLogin );
+
+            NgbClientForm.AddChildForSubform('isKeepLogin', _isKeepLogin);
+			
+		    NgbClientForm.SubmitForm( 'https://' + strDomain + '/login/page/loginproc.aspx' );
+		}
+		else
+		{
+		    var iframe;
+			
+		    try
+		    {
+		        iframe = document.createElement( "<iframe name='iframe1' />" );
+		    } catch ( ex ) {
+		        iframe = document.createElement( "iframe" );
+		        iframe.name = "iframe1";
+		    }
+			
+		    iframe.src = "javascript:'<script>window.onload=function(){document.close();};<\/script>'";
+		    iframe.style.display = "none";
+		    document.body.appendChild( iframe ); 
+
+		    var encData = document.createElement( "input" );
+		    encData.setAttribute( "type", "hidden" );
+		    encData.setAttribute( "name", "strEncData" );
+		    encData.setAttribute( "value", strEncData );
+
+            var accesscode = document.createElement( "input" );
+            accesscode.setAttribute( "type", "hidden" );
+            accesscode.setAttribute( "name", "strAccesscode" );
+            accesscode.setAttribute( "value", strAccesscode );
+
+		    var encCaptchaToken = document.createElement( "input" );
+		    encCaptchaToken.setAttribute( "type", "hidden" );
+		    encCaptchaToken.setAttribute( "name", "strEncCaptchaToken" );
+		    encCaptchaToken.setAttribute( "value", strEncCaptchaToken );
+
+		    var redirect = document.createElement( "input" );
+		    redirect.setAttribute( "type", "hidden" );
+		    redirect.setAttribute( "name", "strRedirect" );
+		    redirect.setAttribute( "value", strRedirect );
+
+		    var callBackMethod = document.createElement( "input" );
+		    callBackMethod.setAttribute( "type", "hidden" );
+		    callBackMethod.setAttribute( "name", "strCallBackMethod" );
+		    callBackMethod.setAttribute( "value", strCallBackMethod );
+
+		    var captchaLogin = document.createElement( "input" );
+		    captchaLogin.setAttribute( "type", "hidden" );
+		    captchaLogin.setAttribute( "name", "isCaptchaLogin" );
+            captchaLogin.setAttribute("value", "1");
+
+            var origin = document.createElement("input");
+            origin.setAttribute("type", "hidden");
+            origin.setAttribute("name", "strPostMessageOrigin");
+            origin.setAttribute("value", document.location.origin);
+
+		    var form = document.createElement( "form" );
+		    form.method = "post";
+		    form.target = "iframe1";
+            form.action = "https://" + strDomain + "/login/page/loginproc2.aspx";
+		    form.appendChild( encData );
+		    form.appendChild( accesscode );
+		    form.appendChild( encCaptchaToken );
+		    form.appendChild( redirect );
+		    form.appendChild( captchaLogin );
+            form.appendChild(callBackMethod);
+            form.appendChild(origin);
+
+		    document.body.appendChild( form );
+			
+            NgbCaptchaLogin.PollSubmit( form );
+		}
+	}
+	
+	this.PollSubmit = function( form )
+	{
+		try
+		{
+			form.submit();
+		}
+		catch( e )
+		{
+			setTimeout(function() { // set a timeout to give browsers a chance to recognize the <iframe> 
+			    NgbCaptchaLogin.PollSubmit( form );
+			}, 100 );
+		}
+	}
+
+    this.SLogin = function (_JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, strRedirect, _B5UX9FVV0IXQRYRP, accesscode) {
+        NgbCaptchaLogin.SetData(_JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, _B5UX9FVV0IXQRYRP, strRedirect, accesscode, '1');
+
+        _isLogin2 = false;
+        if (_JOLABVHKBCISAD0G.indexOf('@') != -1 )
+        {
+            var arrEmail = _JOLABVHKBCISAD0G.split('@');
+
+            if (arrEmail.length != 2 || arrEmail[0] == '' || arrEmail[1] == '' || _JOLABVHKBCISAD0G.indexOf(' ') != -1 )
+            {
+                alert('아이디를 확인해 주세요.');
+                return;
+            }
+
+            if (typeof (_hashtimer) != 'undefined') {
+                alert('로그인 하는 중입니다. 잠시만 기다려주세요.');
+                return;
+            }
+
+            _isFailover = false;
+            _KPQX4QCTQRC7DGF7 = _JOLABVHKBCISAD0G;
+            AuthSystem.GetPasswordHashKey(_JOLABVHKBCISAD0G, NgbCaptchaLogin.HashHandler);
+
+            _hashtimer = setTimeout('NgbCaptchaLogin.ExpireHashProcess()', 5000);
+        }
+		else
+        {
+            NgbCaptchaLogin.MemberLogin();
+        }
+	}
+
+	this.Login = function( _JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, strRedirect, _B5UX9FVV0IXQRYRP, accesscode )
+	{
+	    NgbCaptchaLogin.SetData( _JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, _B5UX9FVV0IXQRYRP, strRedirect, accesscode );
+
+	    _isLogin2 = false;
+		if ( _JOLABVHKBCISAD0G.indexOf( '@' ) != -1 )
+		{
+			var arrEmail = _JOLABVHKBCISAD0G.split( '@' );
+			
+			if ( arrEmail.length != 2 || arrEmail[ 0 ] == '' || arrEmail[ 1 ] == '' || _JOLABVHKBCISAD0G.indexOf( ' ' ) != -1 )
+			{
+				alert( '아이디를 확인해 주세요.' );
+				return;
+			}
+			
+			if ( typeof( _hashtimer ) != 'undefined' )
+			{
+				alert( '로그인 하는 중입니다. 잠시만 기다려주세요.' );
+				return;
+			}
+			
+			_isFailover = false;
+			_KPQX4QCTQRC7DGF7 = _JOLABVHKBCISAD0G;
+			AuthSystem.GetPasswordHashKey( _JOLABVHKBCISAD0G, NgbCaptchaLogin.HashHandler );
+			
+			_hashtimer = setTimeout( 'NgbCaptchaLogin.ExpireHashProcess()', 5000 );
+		}
+		else
+		{
+			NgbCaptchaLogin.MemberLogin();
+		}
+	}
+
+	this.Login2 = function( _JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, _B5UX9FVV0IXQRYRP, strRedirect, callBackMethod, accesscode )
+    {
+	    if( typeof( callBackMethod ) == "undefined" || callBackMethod == "" )
+	    {
+	        alert( "로그인 처리과정 중 오류가 발생하였습니다." );
+	        return;
+        }
+
+        NgbCaptchaLogin.SetData(_JOLABVHKBCISAD0G, _YVLIKN7DNYCRKANB, _B5UX9FVV0IXQRYRP, strRedirect, accesscode);
+	    _isLogin2 = true;
+	    _callBackMethod = callBackMethod;
+
+	    if ( _JOLABVHKBCISAD0G.indexOf( '@' ) != -1 )
+	        {
+	            var arrEmail = _JOLABVHKBCISAD0G.split( '@' );
+			
+	            if ( arrEmail.length != 2 || arrEmail[ 0 ] == '' || arrEmail[ 1 ] == '' )
+	            {
+	                alert( '아이디를 확인해 주세요.' );
+	                return;
+	            }
+			
+	            if ( typeof( _hashtimer ) != 'undefined' )
+	            {
+	                alert( '로그인 하는 중입니다. 잠시만 기다려주세요.' );
+	                return;
+	            }
+			
+	            _isFailover = false;
+	            _KPQX4QCTQRC7DGF7 = _JOLABVHKBCISAD0G;
+
+	            AuthSystem.GetPasswordHashKey( _JOLABVHKBCISAD0G, NgbLogin.HashHandler );
+	            _hashtimer = setTimeout( 'NgbLogin.ExpireHashProcess()', 5000 );
+	        }
+        else
+        {
+	        NgbCaptchaLogin.MemberLogin();
+        }
+	}
+	
+	this.ExpireHashProcess = function()
+	{
+		clearTimeout( _hashtimer );
+		_hashtimer = undefined;
+		
+		alert( '요청 시간이 초과되었습니다.' );
+	}
+
+	this.MemberLogin = function()
+	{
+		_JOLABVHKBCISAD0G = __JOLABVHKBCISAD0G;
+		_YVLIKN7DNYCRKANB = __YVLIKN7DNYCRKANB;
+        _B5UX9FVV0IXQRYRP = __B5UX9FVV0IXQRYRP;
+
+        accesscode = _accesscode;
+        strRedirect = _strRedirect;
+        isSLogin    = _isSLogin;
+
+		var strDomain = NgbCaptchaLogin.GetLoginURL();
+		_JOLABVHKBCISAD0G = NgbString.Trim( _JOLABVHKBCISAD0G );
+		_YVLIKN7DNYCRKANB = NgbString.Trim( _YVLIKN7DNYCRKANB );
+		_B5UX9FVV0IXQRYRP = NgbString.Trim( _B5UX9FVV0IXQRYRP );
+
+        if (typeof ( accesscode ) == 'undefined' )
+            accesscode = 0;
+			
+        if (typeof (isSLogin) == 'undefined')
+            isSLogin = '0';
+
+		if ( _JOLABVHKBCISAD0G == '' || _JOLABVHKBCISAD0G.indexOf( ' ' ) != -1 )
+		{
+			alert( '아이디를 입력해 주세요.' );
+			return;
+		}
+		else if ( _YVLIKN7DNYCRKANB == '' )
+		{
+			alert( '비밀번호를 입력해 주세요.' );
+			return;
+		}
+        else if( _B5UX9FVV0IXQRYRP = '' ) {
+            alert( '자동입력방지문자를 입력해 주세요.' );
+            return;
+        }
+		
+        _accesscode = accesscode;
+        _isSLogin = isSLogin;
+		
+		
+		try
+		{
+			NgbSecurity.InitData();
+			
+			NgbSecurity.AddData( _JOLABVHKBCISAD0G );
+			NgbSecurity.AddData( _JOLABVHKBCISAD0G.indexOf( '@' ) != -1 ? NgbSecurity.HashString2( _header, _YVLIKN7DNYCRKANB, _hashKey ) : _YVLIKN7DNYCRKANB );
+            NgbSecurity.AddData( NgbHash.SHA256_hash(_YVLIKN7DNYCRKANB) );
+
+			NgbSecurity.SetURL( 'https://' + strDomain + '/login/page/encryptinfo.aspx', '로그인 하는 중입니다. 잠시만 기다려주세요.' );
+			NgbSecurity.Encrypt( NgbCaptchaLogin.EncryptHandler );
+		}
+		catch( e )
+		{
+            NgbEVM.AddCommand(NgbEVM.k_nEventType_onPageEnd, new NgbEVMDelegator(NgbCaptchaLogin.SubmitLogin), '', '', strRedirect, _accesscode, _isLogin2, _callBackMethod, _isSLogin );
+		}
+	}
+	
+	this.EncryptHandler = function( encData )
+	{
+        NgbEVM.AddCommand(NgbEVM.k_nEventType_onPageEnd, new NgbEVMDelegator(NgbCaptchaLogin.SubmitLogin), encData, __B5UX9FVV0IXQRYRP, strRedirect, _accesscode, _isLogin2, _callBackMethod, _isSLogin );
+	}
+
+	this.Logout = function( strURL )
+	{
+		var strDomain = NgbCaptchaLogin.GetLoginURL();
+	
+		if ( typeof( strURL ) == 'undefined' )
+			strURL = document.location.href;
+		
+		document.location.href = 'https://' + strDomain + '/login/page/logout.aspx?redirect=' + escape( strURL );
+	}
+	
+	this.GetLoginURL = function()
+	{
+		var strDomain;
+		
+		try
+		{
+			strDomain = NgbUrl.GetDomainURL();
+		}
+		catch ( e )
+		{
+			strDomain = 'login.nexon.com';
+		}
+		
+		switch ( strDomain )
+		{
+			case 'df.nexon.com' : 
+			case 'dflogin.nexon.com' : 
+				return 'dflogin.nexon.com';
+				
+			default : 
+				return 'login.nexon.com';
+		}
+	}
+	
+	this.HashHandler = function( resultObject, responseXML )
+	{
+		try
+		{
+			clearTimeout( _hashtimer );
+			_hashtimer = undefined;
+		
+			if ( typeof( resultObject.PasswordHashKeyString ) != 'undefined' && resultObject.PasswordHashKeyString != '' )
+			{
+				var result = resultObject.PasswordHashKeyString;
+				var info = result.split(':');
+				_header = info[0] + ':' + info[1] + ':' + info[2] + ':';
+				_hashKey = info[3];
+				
+				_isInvalidPasswordHashKeyString = false;
+			}
+			else
+			{
+				_isInvalidPasswordHashKeyString = true;
+			}
+		}
+		catch ( e )
+		{
+			_isInvalidPasswordHashKeyString = true;
+		}
+		
+		if ( _isInvalidPasswordHashKeyString == true )
+		{
+			alert( "로그인 처리과정 중 오류가 발생하였습니다." );
+			return;
+		}
+		else
+		{
+			NgbCaptchaLogin.MemberLogin();
+		}
+	}
+}
