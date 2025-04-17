@@ -86,6 +86,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_card_swiper:
+    dependency: "direct main"
+    description:
+      name: flutter_card_swiper
+      sha256: "1eacbfab31b572223042e03409726553aec431abe48af48c8d591d376d070d3d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -104,6 +112,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      sha256: d3a89184101baec7f4600d58840a764d2ef760fe1c5a20ef9e6b0e9b24a07a3a
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.8.0"
   leak_tracker:
     dependency: transitive
     description:
