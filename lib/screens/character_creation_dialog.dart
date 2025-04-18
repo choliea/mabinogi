@@ -4,6 +4,8 @@ import 'package:mabinogi/providers/character_provider.dart';
 import 'package:provider/provider.dart';
 
 class CharacterCreationDialog extends StatefulWidget {
+  const CharacterCreationDialog({super.key});
+
   @override
   _CharacterCreationDialogState createState() => _CharacterCreationDialogState();
 }
@@ -79,11 +81,10 @@ class _CharacterCreationDialogState extends State<CharacterCreationDialog> {
                 nickname: nickname,
                 className: _className!,
               );
-              newCharacter.toBuyList = initialBuy();
-              newCharacter.todoList = initialTodo();
               newCharacter.equipAcheivement = initialEquipAcheivement();
 
               Provider.of<CharacterProvider>(context, listen: false).addCharacter(newCharacter);
+              Provider.of<CharacterProvider>(context, listen: false).selectCharacter(newCharacter);
               Navigator.of(context).pop();
             }
           },

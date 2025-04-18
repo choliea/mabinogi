@@ -7,55 +7,155 @@ import 'dart:convert'; // Import for JSON encoding/decoding
 class CharacterProvider with ChangeNotifier {
   List<CharacterProfile> _characterProfiles = [];
   CharacterProfile? _selectedCharacter;
+  List<Todo> accountTodo = [
+    Todo(
+      mission: Mission(
+        title: '캐시샵 무료 패션 아이템 구입',
+        totalCount: 1,
+        difficulty: Difficulty.fromCode('normal'),
+        resetCycle: ResetCycle.fromCode('daily'),
+        completeTimeAttack: true,
+        accountLimit: true,
+      ),
+      completedCount: 0,
+      isCompleted: false,
+    ),
+  ];
+  void addCharacter(CharacterProfile profile) {
+    _characterProfiles.add(profile);
+    notifyListeners();
+  }
+
+  void removeCharacter(CharacterProfile profile) {
+    _characterProfiles.remove(profile);
+    if (_selectedCharacter == profile) {
+      _selectedCharacter = null; // Or select another character.
+    }
+    notifyListeners();
+  }
+
+  void selectCharacter(CharacterProfile profile) {
+    _selectedCharacter = profile;
+    notifyListeners();
+  }
+
+  void updateTodo(
+    CharacterProfile profile,
+    String todoListType,
+    Todo todo,
+    int newCompletedCount,
+  ) {
+    List<Todo>? targetList;
+
+    switch (todoListType) {
+      case 'daily':
+        targetList = profile.dailyTodos;
+        break;
+      case 'weeklyBoss':
+        targetList = profile.weeklyBoss;
+        break;
+      case 'abis':
+        profile.abis.forEach((key, value) {
+          if (value.contains(todo)) {
+            targetList = value;
+          }
+        });
+        break;
+      case 'account':
+        targetList = accountTodo;
+        break;
+      default:
+        return;
+    }
+
+    if (targetList != null) {
+      int index = targetList!.indexOf(todo);
+      if (index != -1) {
+        // Create a new Todo object with updated values
+        Todo updatedTodo = Todo(
+          mission: todo.mission,
+          completedCount: newCompletedCount,
+          isCompleted: newCompletedCount == todo.mission.totalCount,
+        );
+
+        // Replace the Todo in the list with the updated one
+        targetList![index] = updatedTodo;
+      }
+      notifyListeners();
+    }
+  }
+
+  void updateTimeAttack(CharacterProfile profile, Todo todo) {
+    List<Todo>? targetList;
+
+    profile.abis.forEach((key, value) {
+      if (value.contains(todo)) {
+        targetList = value;
+      }
+    });
+
+    if (targetList != null) {
+      int index = targetList!.indexOf(todo);
+      if (index != -1) {
+        Mission updateMission = todo.mission;
+        updateMission.completeTimeAttack = !updateMission.completeTimeAttack;
+        Todo updatedTodo = Todo(
+          mission: updateMission,
+          completedCount: todo.completedCount,
+          isCompleted: todo.isCompleted,
+        );
+
+        // Replace the Todo in the list with the updated one
+        targetList![index] = updatedTodo;
+      }
+      notifyListeners();
+    }
+  }
+
+  void resetDailyTodosForCharacter(CharacterProfile profile) {
+    profile.resetDailyTodos();
+    notifyListeners();
+  }
+
+  void resetWeeklyBossTodosForCharacter(CharacterProfile profile) {
+    profile.resetWeeklyBossTodos();
+    notifyListeners();
+  }
+
+  void resetAbisTodosForCharacter(CharacterProfile profile) {
+    profile.resetAbisTodos();
+    notifyListeners();
+  }
+
+  //Account Todo
+  void updateAccountTodo(Todo todo, int newCompletedCount) {
+    int index = accountTodo.indexOf(todo);
+    if (index != -1) {
+      // Create a new Todo object with updated values
+      Todo updatedTodo = Todo(
+        mission: todo.mission,
+        completedCount: newCompletedCount,
+        isCompleted: newCompletedCount == todo.mission.totalCount,
+      );
+
+      // Replace the Todo in the list with the updated one
+      accountTodo[index] = updatedTodo;
+    }
+    notifyListeners();
+  }
 
   List<CharacterProfile> get characterProfiles => _characterProfiles;
   CharacterProfile? get selectedCharacter => _selectedCharacter;
-
   // Initialization, load data from SharedPreferences
   CharacterProvider() {
     loadCharacters();
   }
 
-  void addCharacter(CharacterProfile character) {
-    _characterProfiles.add(character);
-    saveCharacters();
-    notifyListeners();
-  }
-
-  void selectCharacter(CharacterProfile character) {
-    _selectedCharacter = character;
-    notifyListeners();
-  }
-
-  // CRUD operations for ToBuy, Todo, and EquipAchievement will go here, e.g.:
-  void updateToBuy(CharacterProfile character, ToBuy toBuy, bool newValue) {
-    toBuy.toBuy = newValue;
-    saveCharacters(); // Persist changes immediately
-    notifyListeners();
-  }
-
-  void addTodo(CharacterProfile character, Todo todo) {
-    character.todoList.add(todo);
-    saveCharacters();
-    notifyListeners();
-  }
-
-  void updateTodo(CharacterProfile character, Todo todo) {
-    // Logic to update the todo item (e.g., mark as complete)
-    saveCharacters();
-    notifyListeners();
-  }
-
-  void updateEquipAchievement(CharacterProfile character, EquipAcheivement equipAchievement, int newPower) {
-      equipAchievement.setFoundPower(newPower);
-      saveCharacters();
-      notifyListeners();
-  }
-
   // -- Persistence using SharedPreferences --
   Future<void> saveCharacters() async {
     final prefs = await SharedPreferences.getInstance();
-    final characterList = _characterProfiles.map((e) => jsonEncode(characterToJson(e))).toList();
+    final characterList =
+        _characterProfiles.map((e) => jsonEncode(characterToJson(e))).toList();
     await prefs.setStringList('characters', characterList);
   }
 
@@ -63,7 +163,8 @@ class CharacterProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final characterList = prefs.getStringList('characters');
     if (characterList != null) {
-      _characterProfiles = characterList.map((e) => characterFromJson(e)).toList();
+      _characterProfiles =
+          characterList.map((e) => characterFromJson(e)).toList();
       notifyListeners();
     }
   }
@@ -73,21 +174,25 @@ class CharacterProvider with ChangeNotifier {
       'server': character.server,
       'nickname': character.nickname,
       'className': character.className,
-      'toBuyList': character.toBuyList.map((toBuy) => toBuyToJson(toBuy)).toList(),
-      'equipAcheivement': character.equipAcheivement.map((equip) => equipAcheivementToJson(equip)).toList(),
-      'todoList': character.todoList.map((todo) => todoToJson(todo)).toList(),
+      'equipAcheivement':
+          character.equipAcheivement
+              .map((equip) => equipAcheivementToJson(equip))
+              .toList(),
     });
   }
 
   CharacterProfile characterFromJson(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);
     return CharacterProfile(
-      server: json['server'],
-      nickname: json['nickname'],
-      className: json['className'],
-    )..toBuyList = (json['toBuyList'] as List).map((e) => toBuyFromJson(e)).toList().cast<ToBuy>()
-    ..equipAcheivement = (json['equipAcheivement'] as List).map((e) => equipAcheivementFromJson(e)).toList().cast<EquipAcheivement>()
-    ..todoList = (json['todoList'] as List).map((e) => todoFromJson(e)).toList().cast<Todo>();
+        server: json['server'],
+        nickname: json['nickname'],
+        className: json['className'],
+      )
+      ..equipAcheivement =
+          (json['equipAcheivement'] as List)
+              .map((e) => equipAcheivementFromJson(e))
+              .toList()
+              .cast<EquipAcheivement>();
   }
 
   String toBuyToJson(ToBuy toBuy) {
@@ -98,9 +203,7 @@ class CharacterProvider with ChangeNotifier {
   }
 
   ToBuy toBuyFromJson(dynamic json) {
-    return ToBuy(
-        item: sellInfoFromJson(json['item']),
-        toBuy: json['toBuy']);
+    return ToBuy(item: sellInfoFromJson(json['item']), toBuy: json['toBuy']);
   }
 
   String equipAcheivementToJson(EquipAcheivement equip) {
@@ -162,17 +265,11 @@ class CharacterProvider with ChangeNotifier {
   }
 
   String itemToJson(Item item) {
-    return jsonEncode({
-      'name': item.name,
-      'amount': item.amount,
-    });
+    return jsonEncode({'name': item.name, 'amount': item.amount});
   }
 
   Item itemFromJson(dynamic json) {
-    return Item(
-      name: json['name'],
-      amount: json['amount'],
-    );
+    return Item(name: json['name'], amount: json['amount']);
   }
 
   String equipToJson(Equip equip) {
@@ -197,7 +294,7 @@ class CharacterProvider with ChangeNotifier {
     return jsonEncode({
       'title': mission.title,
       'totalCount': mission.totalCount,
-      'difficulty': mission.difficulty?.code,
+      'difficulty': mission.difficulty.code,
       'resetCycle': mission.resetCycle.code,
       'completeTimeAttack': mission.completeTimeAttack,
       'accountLimit': mission.accountLimit,
@@ -208,7 +305,7 @@ class CharacterProvider with ChangeNotifier {
     return Mission(
       title: json['title'],
       totalCount: json['totalCount'],
-      difficulty: json['difficulty'] != null ? Difficulty.fromCode(json['difficulty']) : null,
+      difficulty: json['difficulty'],
       resetCycle: ResetCycle.fromCode(json['resetCycle']),
       completeTimeAttack: json['completeTimeAttack'],
       accountLimit: json['accountLimit'],
